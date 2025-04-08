@@ -14,27 +14,42 @@ datasource db {
 }
 
 model User {
-  id          String @id @default(uuid())
-  name        String
-  email       String
-  password    String
+  id                  String @id @default(uuid())
+  name                String
+  email               String
+  password            String
 }
 
 model Zap {
-  id          String @id @default(uuid())
-  trigger     Trigger?
+  id                  String @id @default(uuid())
+  trigger             Trigger?
+  action              Action[]
 }
 
 model Trigger {
   id                    String @id @default(uuid())
   zapId                 String @unique
   availableTriggerId    String
-  type                  AvailableTriggers @relation(fields: [availableTriggerId], references: [id])
+  type                  AvailableTrigger @relation(fields: [availableTriggerId], references: [id])
   zap                   Zap @relation(fields: [zapId], references: [id])
 }
 
-model AvailableTriggers {
+model AvailableTrigger {
   id                    String @id @default(uuid())
   name                  String 
   triggers              Trigger[] 
+}
+
+model Action {
+  id                    String @id @default(uuid())
+  zapId                 String @unique
+  zap                   Zap @relation(fields: [zapId], references: [id])
+  actionId              String @unique
+  type                  AvailableAction  @relation(fields: [actionId], references: [id])
+}
+
+model AvailableAction {
+  id                    String @id @default(uuid())
+  name                  String
+  actions               Action[]
 }
