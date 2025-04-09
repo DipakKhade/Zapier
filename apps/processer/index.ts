@@ -30,6 +30,14 @@ async function swipper(){
                     }
                 })
         })
+
+        await prisma.zapRunOutBox.deleteMany({
+            where:{
+                id:{
+                    in:zap_run_outbox.map(z=>z.zapRunId)
+                }
+            }
+        })
     }
 }
 
