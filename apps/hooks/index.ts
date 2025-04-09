@@ -16,14 +16,18 @@ app.post('/hooks/catch/:userId/:zapId', async(req,res)=>{
             }
         })
 
-        return zap_run.id;
+        await tx.zapRunOutBox.create({
+            data:{
+                zapRunId:zap_run.id
+            }
+        })
+
     })
 
     // push zap run trigger to queue
 
     res.json({
         message:"zap triggers successfully",
-        tx_id
     })
 })
 
