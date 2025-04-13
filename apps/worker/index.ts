@@ -9,7 +9,7 @@ const kafka = new Kafka({
 
 async function actionsConsumer(){
     const consumer = kafka.consumer({
-        groupId:''
+        groupId:'asd'
     });
     await consumer.connect();
 
@@ -18,10 +18,13 @@ async function actionsConsumer(){
     consumer.run({
         autoCommit:false,
         eachMessage:async({ topic, partition, message })=>{
-            console.log({partition,offset: message.offset,value: message.value!.toString()})
+            console.log('log from worker',{partition,offset: message.offset,value: message.value!.toString()}, 'topic', topic);
+
+            new Promise((r)=>setTimeout(()=>r, 5000));
+
               await consumer.commitOffsets([
                 {
-                    topic:TOPIC_NAME,
+                    topic,
                     offset:(parseInt(message.offset)+1).toString(),
                     partition
                 }
@@ -30,3 +33,5 @@ async function actionsConsumer(){
     })
     
 }
+
+actionsConsumer()

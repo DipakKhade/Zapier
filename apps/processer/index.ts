@@ -42,6 +42,8 @@ async function swipper(){
                 }
             }
         })
+
+        await new Promise(r => setTimeout(r, 3000));
     }
 }
 
