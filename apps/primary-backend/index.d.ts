@@ -1,4 +1,4 @@
 
-declare interface express{
+declare interface Request{
    
 }

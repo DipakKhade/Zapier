@@ -11,7 +11,12 @@
     "typescript": "^5"
   },
   "dependencies": {
+    "@types/cors": "^2.8.17",
+    "bcrypt": "^5.1.1",
+    "config": "*",
+    "cors": "^2.8.5",
+    "db": "*",
     "express": "^5.1.0",
-    "config":"*"
+    "zod": "^3.24.2"
   }
 }
