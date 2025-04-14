@@ -1,19 +1,27 @@
-import zod from "zod";
+import z from "zod";
 
-const signInSchema = zod.object({
-    username:zod.string().min(5),
-    email:zod.string().email(),
-    password:zod.string().min(5)
+const signInSchema = z.object({
+    username:z.string().min(5),
+    email:z.string().email(),
+    password:z.string().min(5)
 })
 
-const signUpSchema = zod.object({
-    username:zod.string().min(5),
-    email:zod.string().email(),
-    password:zod.string().min(5)
+const signUpSchema = z.object({
+    username:z.string().min(5),
+    email:z.string().email(),
+    password:z.string().min(5)
 })
 
+const zapSchema = z.object({
+    availableTriggerId:z.string(),
+    actions:z.array(z.object({
+        availableActionId: z.string(),
+        metadata: z.any().optional()
+    }))
+})
 
 export {
     signInSchema,
-    signUpSchema
+    signUpSchema,
+    zapSchema
 }
