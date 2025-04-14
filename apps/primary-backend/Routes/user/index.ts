@@ -11,9 +11,8 @@ const SALT = 10;
 
 userRouter.post('/signin', async(req,res)=>{
     try{
-        const { paylaod } = req.body;
-        const parsedPaylaod = signInSchema.safeParse(paylaod);
-        
+        const { payload } = req.body;
+        const parsedPaylaod = signInSchema.safeParse(payload);
         if(parsedPaylaod.error){
             res.status(411).json({
                 message:parsedPaylaod.error.message
@@ -43,8 +42,9 @@ userRouter.post('/signin', async(req,res)=>{
 
 userRouter.post('/signup', async(req, res)=>{
     try{
-        const { paylaod } = req.body;
-        const parsedPaylaod = signUpSchema.safeParse(paylaod);
+        console.log(req.body)
+        const { payload } = req.body;
+        const parsedPaylaod = signUpSchema.safeParse(payload);
     
         if(parsedPaylaod.error){
             res.status(411).json({

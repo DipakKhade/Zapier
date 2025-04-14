@@ -15,10 +15,10 @@ export const authMiddleware = async (req:Request, res:Response, next:NextFunctio
         email:string,
         username:string
     }
-
     if(verify_token){
         req.userId = verify_token.userId;
         next();
+        return;
     }
 
     res.json({

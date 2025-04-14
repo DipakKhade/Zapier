@@ -28,7 +28,7 @@ zapRouter.get('/zapRuns', authMiddleware, async(req,res)=>{
 
 zapRouter.post('/create', authMiddleware, async(req,res)=>{
     try{
-        const payload = req.body;
+        const { payload } = req.body;
         const parsedPaylaod = zapSchema.safeParse(payload);
 
         if(!parsedPaylaod.success){
@@ -86,7 +86,7 @@ zapRouter.get('/:zapId', authMiddleware, async(req, res)=>{
             data:zap
         })
         return;
-        
+
     }catch(error){
         throw error
     }
