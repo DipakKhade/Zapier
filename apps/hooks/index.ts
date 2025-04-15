@@ -1,14 +1,13 @@
 import express from "express";
 import { prisma } from "db/client";
-
+import { HOOKS_PORT } from "config/config"
 const app = express();
-const PORT = process.env.HOOKS_PORT || 3000
+const PORT = process.env.HOOKS_PORT || HOOKS_PORT
 
 app.post('/hooks/catch/:userId/:zapId', async(req,res)=>{
     const userId = req.params.userId;
     const zapId = req.params.zapId;
-    console.log(userId, zapId)
-     const tx_id = prisma.$transaction(async tx=>{
+     const tx_id = await prisma.$transaction(async tx=>{
         const zap_run = await tx.zapRun.create({
             data:{
                 zapId,
@@ -29,6 +28,7 @@ app.post('/hooks/catch/:userId/:zapId', async(req,res)=>{
     res.json({
         message:"zap triggers successfully",
     })
+    return;
 })
 
 

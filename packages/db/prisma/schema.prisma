@@ -15,7 +15,7 @@ datasource db {
 
 model User {
   id                  String @id @default(uuid())
-  name            String
+  name                String @unique
   email               String?
   password            String
   zap                 Zap[]
@@ -46,11 +46,11 @@ model AvailableTrigger {
 
 model Action {
   id                    String @id @default(uuid())
-  zapId                 String @unique
+  zapId                 String 
   zap                   Zap @relation(fields: [zapId], references: [id])
-  actionId              String @unique
+  actionId              String 
   type                  AvailableAction  @relation(fields: [actionId], references: [id])
-    sortingOrder          Int @default(0)
+  sortingOrder          Int @default(0)
 }
 
 model AvailableAction {

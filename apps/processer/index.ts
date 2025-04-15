@@ -24,15 +24,11 @@ async function swipper(){
 
         await producer.send({
             topic:TOPIC_NAME,
-            // messages:zap_run_outbox.map(z=>{
-            //         return {
-            //             value:z.zapRunId
-            //         }
-            //     })
-            messages:[
-                {value:"message from processer"},
-                {value:"hi there"},
-            ]
+            messages:zap_run_outbox.map(z=>{
+                    return {
+                        value:z.zapRunId
+                    }
+                })
         })
 
         await prisma.zapRunOutBox.deleteMany({
