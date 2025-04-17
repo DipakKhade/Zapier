@@ -1,11 +1,10 @@
-import { Header } from "./components/header";
-import { Hero } from "./components/hero";
+import { Hero } from "@/components/hero";
+
 
 export default function Home() {
   return <>
-    <Header/>
     <div className="flex justify-center pt-24">
-    <Hero/>
+       <Hero/>
     </div>
   </>
 }

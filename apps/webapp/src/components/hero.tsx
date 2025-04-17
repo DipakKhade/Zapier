@@ -1,5 +1,5 @@
 import Image from "next/image"
-import heroimg from "../../../public/homepage-hero_vvpkmi.avif"
+import heroimg from "../../public/homepage-hero_vvpkmi.avif"
 
 export const Hero = () =>{
     return <div className="flex">
