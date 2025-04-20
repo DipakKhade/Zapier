@@ -3,6 +3,8 @@
 import { signIn } from "next-auth/react"
 import { useRef, useState } from "react";
 import { PrimaryButton } from "./buttons";
+import Link from "next/link";
+import { PRIMARY_BACKEND_PORT } from "config/config";
 
 export const SignUpCard = () =>{
     const [ username, SetUsername ] = useState<string>('');
@@ -14,7 +16,7 @@ export const SignUpCard = () =>{
     const handleSignUp = async () => {
         if (!username) {
             // TOD0: fix types here 
-            usernameRef.current.focus();
+            (usernameRef.current as unknown as HTMLInputElement).focus();
             return;
         }else if(!email){
             emailRef.current.focus();
@@ -24,23 +26,25 @@ export const SignUpCard = () =>{
             return;
         }
 
-        const response = await fetch('/api/auth/register', {
+        const response = await fetch(`http://localhost:${PRIMARY_BACKEND_PORT}/api/v1/user/signin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({
-                username,
-                email,
-                password,
+                payload:{
+                    username,
+                    email,
+                    password,
+                }
             }),
         });
 
-        if (response.ok) {
-            alert('Signup successful!');
-        } else {
-            alert('Signup failed!');
-        }
+        // if (response.ok) {
+        //     alert('Signup successful!');
+        // } else {
+        //     alert('Signup failed!');
+        // }
     }
     return <div className="border border-gray-500 w-[28vw] h-[70vh] rounded-sm flex flex-col align-middle content-center">
         <GoogleSignUpButton/>
@@ -64,9 +68,11 @@ export const SignUpCard = () =>{
             Get started for free
             </div>
             </PrimaryButton>
-
-            <div>
-            Already have an account? Log In
+            <div className="justify-center pt-2">
+            By signing up, you agree to Zapier&apos;s <Link className="text-blue-600 underline" href={'/terms'}><span>Terms of Service</span></Link> and <Link className="text-blue-600 underline" href={'/privacy'}><span>Privacy Policy</span></Link>
+            </div>
+            <div className="justify-center pt-2 content-center flex ">
+            Already have an account? <Link className="text-blue-600 underline" href={'/login'}><span>Log In</span></Link>
             </div>
         </div>
         </div>

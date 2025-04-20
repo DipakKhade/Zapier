@@ -4,10 +4,10 @@ export const SignUpSideCard = () =>{
         <div className="font-bold text-4xl text-start">
         Join millions worldwide who automate their work using Zapier.
         </div>
-        <div>
-            <div className="flex"><CheckTick/> Easy setup, no coding required</div>
-            <div className="flex"><CheckTick/> Free forever for core features</div>
-            <div className="flex"><CheckTick/> 14-day trial of premium features & apps</div>
+        <div className="flex flex-col space-y-4 pt-4">
+            <div className="flex gap-2"><CheckTick/> Easy setup, no coding required</div>
+            <div className="flex gap-2"><CheckTick/> Free forever for core features</div>
+            <div className="flex gap-2"><CheckTick/> 14-day trial of premium features & apps</div>
         </div>
     </div>
 }
