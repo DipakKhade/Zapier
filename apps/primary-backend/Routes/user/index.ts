@@ -1,10 +1,10 @@
 import { Router } from "express";
-import { signInSchema, signUpSchema } from "../../zodSchema/zod";
 import { prisma } from "db/client";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { JWT_SEC } from "config/config";
 import { authMiddleware } from "../../Middlewares/auth";
+import { signInSchema, signUpSchema } from "common-types";
 
 const userRouter = Router();
 const SALT = 10;

@@ -21,6 +21,7 @@
     "config": "*",
     "cors": "^2.8.5",
     "db": "*",
+    "common-types":"*",
     "express": "^5.1.0",
     "jsonwebtoken": "^9.0.2",
     "zod": "^3.24.2"

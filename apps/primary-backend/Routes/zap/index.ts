@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { authMiddleware } from "../../Middlewares/auth";
 import { prisma } from "db/client";
-import { zapSchema } from "../../zodSchema/zod";
+import { zapSchema } from "common-types";
 
 const zapRouter = Router();
 
