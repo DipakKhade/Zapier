@@ -10,22 +10,24 @@ export const SignUpCard = () =>{
     const [ username, SetUsername ] = useState<string>('');
     const [ email, SetEmail ] = useState<string>('');
     const [ password, SetPassword ] = useState<string>('');
+    const [ loading , setLoading ] = useState<boolean>(false);
+
     const usernameRef = useRef(username);
     const emailRef = useRef(email);
     const passwordRef = useRef(password);
+
     const handleSignUp = async () => {
         if (!username) {
-            // TOD0: fix types here 
             (usernameRef.current as unknown as HTMLInputElement).focus();
             return;
         }else if(!email){
-            emailRef.current.focus();
+            (emailRef.current as unknown as HTMLInputElement).focus();
             return;
         }else if(!password){
-            passwordRef.current.focus();
+            (passwordRef.current as unknown as HTMLInputElement).focus();
             return;
         }
-
+        setLoading(true);
         const response = await fetch(`http://localhost:${PRIMARY_BACKEND_PORT}/api/v1/user/signin`, {
             method: 'POST',
             headers: {
@@ -39,12 +41,7 @@ export const SignUpCard = () =>{
                 }
             }),
         });
-
-        // if (response.ok) {
-        //     alert('Signup successful!');
-        // } else {
-        //     alert('Signup failed!');
-        // }
+        setLoading(false);
     }
     return <div className="border border-gray-500 w-[28vw] h-[70vh] rounded-sm flex flex-col align-middle content-center">
         <GoogleSignUpButton/>
@@ -64,7 +61,7 @@ export const SignUpCard = () =>{
                 SetPassword(e.target.value)
             }}/>
 
-            <PrimaryButton classNames="rounded-sm" onClick={handleSignUp}> <div className="p-3">
+            <PrimaryButton disabled={loading} classNames="rounded-sm" onClick={handleSignUp}> <div className="p-3">
             Get started for free
             </div>
             </PrimaryButton>

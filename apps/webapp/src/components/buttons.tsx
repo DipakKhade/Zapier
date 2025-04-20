@@ -1,7 +1,7 @@
 import { ReactNode } from "react"
 
-export const PrimaryButton = ({ children, onClick, classNames } : { children:ReactNode, onClick? : ()=> void, classNames?:string }) =>{
-    return <button onClick={onClick} className={`bg-orange-500 rounded-3xl px-4 py-0 text-slate-50 font-semibold cursor-pointer ${classNames}`}>
+export const PrimaryButton = ({ children, onClick, classNames, disabled } : { children:ReactNode, onClick? : ()=> void, classNames?:string, disabled:boolean }) =>{
+    return <button disabled={disabled} onClick={onClick} className={`rounded-3xl px-4 py-0 text-slate-50 font-semibold cursor-pointer ${disabled ? 'bg-gray-400' : 'bg-orange-500'} ${classNames}`}>
         {children}
     </button>
 }

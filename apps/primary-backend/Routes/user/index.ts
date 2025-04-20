@@ -21,6 +21,7 @@ userRouter.post('/signin', async(req,res)=>{
         }
         
         const { username, email, password } = parsedPaylaod.data
+        //TODO: send user email to verify
         const hashed_password = await bcrypt.hash(password, SALT)
         const new_user = await prisma.user.create({
             data:{
