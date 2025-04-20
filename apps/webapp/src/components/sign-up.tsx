@@ -1,8 +1,47 @@
 'use client';
 
 import { signIn } from "next-auth/react"
+import { useRef, useState } from "react";
+import { PrimaryButton } from "./buttons";
 
 export const SignUpCard = () =>{
+    const [ username, SetUsername ] = useState<string>('');
+    const [ email, SetEmail ] = useState<string>('');
+    const [ password, SetPassword ] = useState<string>('');
+    const usernameRef = useRef(username);
+    const emailRef = useRef(email);
+    const passwordRef = useRef(password);
+    const handleSignUp = async () => {
+        if (!username) {
+            // TOD0: fix types here 
+            usernameRef.current.focus();
+            return;
+        }else if(!email){
+            emailRef.current.focus();
+            return;
+        }else if(!password){
+            passwordRef.current.focus();
+            return;
+        }
+
+        const response = await fetch('/api/auth/register', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                username,
+                email,
+                password,
+            }),
+        });
+
+        if (response.ok) {
+            alert('Signup successful!');
+        } else {
+            alert('Signup failed!');
+        }
+    }
     return <div className="border border-gray-500 w-[28vw] h-[70vh] rounded-sm flex flex-col align-middle content-center">
         <GoogleSignUpButton/>
         <div className="flex">
@@ -11,15 +50,24 @@ export const SignUpCard = () =>{
             <hr className="border-t-[1px] border-gray-500 w-48 mx-auto my-4" />
         </div>
         <div className="flex flex-col p-4">
-            <Input placeholder="Username" type="text" onChange={e =>{
+            <Input ref={usernameRef} placeholder="Enter Username" type="text" onChange={e =>{
+                SetUsername(e.target.value)
+            }}/>
+            <Input ref={emailRef} placeholder="Enter Email" type="text" onChange={e =>{
+                SetEmail(e.target.value)
+            }}/>
+            <Input ref={passwordRef} placeholder="Enter Passowrd" type="password" onChange={e =>{
+                SetPassword(e.target.value)
+            }}/>
 
-            }}/>
-            <Input placeholder="Email" type="text" onChange={e =>{
+            <PrimaryButton classNames="rounded-sm" onClick={handleSignUp}> <div className="p-3">
+            Get started for free
+            </div>
+            </PrimaryButton>
 
-            }}/>
-            <Input placeholder="Passowrd" type="text" onChange={e =>{
-                
-            }}/>
+            <div>
+            Already have an account? Log In
+            </div>
         </div>
         </div>
 }
@@ -35,10 +83,11 @@ const GoogleSignUpButton = () =>{
     </button>
 }
 
-const Input = ({ type = "text", placeholder, onChange } : {
+const Input = ({ type = "text", placeholder, onChange, ref } : {
     type: string,
     placeholder: string,
-    onChange: (e:any) => void
+    onChange: (e:any) => void,
+    ref:Ref<HTMLInputElement> | undefined
 }) => {
-    return <input type={type} placeholder={placeholder} onChange={onChange} className="border border-slate-500 p-2 mb-4" />
+    return <input ref={ref} type={type} placeholder={placeholder} onChange={onChange} className="border border-slate-500 p-2 mb-4 rounded-sm" />
 }
