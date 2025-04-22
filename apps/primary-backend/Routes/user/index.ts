@@ -117,4 +117,33 @@ userRouter.get('/getUserDetails', authMiddleware, async(req, res)=>{
 
 })
 
+userRouter.get('/isValidEmail',async (req,res)=>{
+    const { email } = req.query;
+    try{
+        const user = await prisma.user.findFirst({
+            where:{
+                email: email as string
+            }
+        })
+
+        if(user){
+            res.json({
+                message:"email is valid",
+                success:true
+            })
+
+            return;
+        }
+
+        res.json({
+             message:"email is not valid",
+            success:false
+         })
+
+        return;
+    }catch(error){
+        throw error
+    }
+})
+
 export default userRouter;
