@@ -1,4 +1,4 @@
-import { SignUpCard } from "@/components/sign-up";
+import { SignUpCard } from "@/components/sign-up-card";
 import { SignUpSideCard } from "@/components/sign-up-sidecard";
 
 export default function SignUp() {
