@@ -5,12 +5,14 @@ import { Input } from "./input"
 import Link from "next/link";
 import { PrimaryButton } from "./buttons";
 import { PRIMARY_BACKEND_URL } from "config/config";
+import { useRouter } from "next/navigation";
 
 export const LogInCard = () =>{
     const [ email, SetEmail ] = useState<string>('');
     const [ isValidEmail, SetIsValidEmail ] = useState<boolean>(false);
     const [ password, SetPassword ] = useState<string>('');
     const [ loading, setLoading ] = useState<boolean>(false);
+    const router = useRouter();
     const verifyEmail = async () => {
         setLoading(true);
         const response = await fetch(`${PRIMARY_BACKEND_URL}/api/v1/user/isValidEmail?email=${email}`);
@@ -24,7 +26,7 @@ export const LogInCard = () =>{
 
     const loginHandler = async () => {
         setLoading(true);
-        const response = await fetch(`${PRIMARY_BACKEND_URL}/api/v1/user/signin`, {
+        const response = await fetch(`${PRIMARY_BACKEND_URL}/api/v1/user/login`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -39,7 +41,8 @@ export const LogInCard = () =>{
         const data = await response.json();
         if(data.success){
             setLoading(false);
-            window.location.href = "/app";
+            localStorage.setItem('token', data.token);
+            router.push('/dashboard');
         }
         setLoading(false);
     }

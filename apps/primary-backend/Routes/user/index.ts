@@ -41,7 +41,7 @@ userRouter.post('/signin', async(req,res)=>{
     }
 })
 
-userRouter.post('/signup', async(req, res)=>{
+userRouter.post('/login', async(req, res)=>{
     try{
         console.log(req.body)
         const { payload } = req.body;
