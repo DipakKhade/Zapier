@@ -6,6 +6,7 @@ import { PRIMARY_BACKEND_PORT } from "config/config";
 import { signInType } from "common-types";
 import { GoogleAuthButton } from "./google-auth-button";
 import { Input } from "./input";
+import { useRouter } from "next/navigation";
 
 export const SignUpCard = () =>{
     const [ username, SetUsername ] = useState<string>('');
@@ -16,6 +17,8 @@ export const SignUpCard = () =>{
     const usernameRef = useRef(username);
     const emailRef = useRef(email);
     const passwordRef = useRef(password);
+
+    const router = useRouter();
 
     const handleSignUp = async () => {
         if (!username) {
@@ -34,7 +37,7 @@ export const SignUpCard = () =>{
             email,
             password,
         }
-        await fetch(`http://localhost:${PRIMARY_BACKEND_PORT}/api/v1/user/signin`, {
+        const res = await fetch(`http://localhost:${PRIMARY_BACKEND_PORT}/api/v1/user/signin`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -43,6 +46,11 @@ export const SignUpCard = () =>{
                 payload
             }),
         });
+
+        const data = await res.json();
+        if(data.success){
+            router.push('/login');
+        }
         setLoading(false);
     }
     return <div className="border border-gray-500 w-[28vw] h-[70vh] rounded-sm flex flex-col align-middle content-center">

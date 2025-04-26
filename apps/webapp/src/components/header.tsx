@@ -12,7 +12,11 @@ export const Header = () => {
             </div>
 
             <div className="flex space-x-4">
-                <HoverButton>Log in</HoverButton>
+                <HoverButton>
+                    <Link href={'/login'}>
+                    Log in
+                    </Link>
+                </HoverButton>
                 <PrimaryButton>
                     <Link href={'/sign-up'}>
                     Sign up

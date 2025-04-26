@@ -1,5 +1,6 @@
 'use client';
 
+import { PRIMARY_BACKEND_URL } from "config/config";
 import { useEffect, useState } from "react";
 
 interface Zap {
@@ -18,13 +19,20 @@ interface Zap {
 
 export const ZapList = () =>{
     const [ zaps, setZaps ] = useState<Zap[]>([]);
+
     useEffect(()=>{
         (async ()=>{
-            const response = await fetch('http://localhost:3000/api/v1/zap/zapRuns');
+            const response = await fetch(`${PRIMARY_BACKEND_URL}/api/v1/zap/zapRuns`,{
+                method:'GET',
+                headers:{
+                    'authorization':`Bearer ${localStorage.getItem('token')}`,
+                    'Content-Type':'application/json'
+                }
+            });
             const data = await response.json();
             setZaps(data.data);
         })();
-    })
+    },[])
 
     return <>
     <div className="flex flex-col justify-center items-center space-y-10">
@@ -34,7 +42,9 @@ export const ZapList = () =>{
 }
 
 
-const Zap = () =>{
+const Zap = ({zap}:{
+    zap:Zap
+}) =>{
 
     return <div>
 
