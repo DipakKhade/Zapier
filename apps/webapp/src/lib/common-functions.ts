@@ -9,7 +9,7 @@ export const get_available_triggers = async () =>{
     })
     const data = await res.json();
 
-    return data;
+    return data?.available_triggers;
 }
 
 export const get_available_actions = async () =>{
@@ -21,5 +21,5 @@ export const get_available_actions = async () =>{
     })
     const data = await res.json();
 
-    return data;
+    return data?.available_actions
 }

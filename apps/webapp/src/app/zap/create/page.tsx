@@ -95,7 +95,7 @@ const SelectionModal = ( { modalFor , data } : {
     const searchInputRef = useRef(null);
 
     useEffect(()=> {
-        // (searchInputRef as unknown as HTMLInputElement).focus();
+        // (searchInputRef as unknown as HTMLInputElement).focus();    
         document.getElementById('searchBox')?.focus()  //TODO: fix this 
     },[])
 
@@ -103,6 +103,13 @@ const SelectionModal = ( { modalFor , data } : {
         <div className='flex'>
             <SearchIcon className='mt-3'/>
             <input type="text" ref={searchInputRef} id='searchBox' placeholder={`Search ${modalFor}`} className='border border-slate-50 p-2 w-full m-2' />
+        </div>
+        <div className='space-x-2.5 grid grid-cols-2 space-y-2 pt-4'>
+            {data.map((ele, index)=> {
+                return <button key={index} className='cursor-pointer font-bold text-lg text-start'>
+                    {ele.name}
+                </button>
+            })}
         </div>
     </div>
 }
