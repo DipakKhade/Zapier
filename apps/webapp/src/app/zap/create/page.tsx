@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useRef, useState } from 'react';
 import {
   ReactFlow,
   Background,
@@ -12,6 +12,7 @@ import {
 import '@xyflow/react/dist/style.css';
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription, Dialog } from '@/components/dialog';
 import { get_available_actions, get_available_triggers } from '@/lib/common-functions';
+import { SearchIcon } from 'lucide-react';
 
 interface Node {
     id: string,
@@ -72,11 +73,10 @@ export default function Page() {
       {selectedNode && (
         <DialogContent>
           <DialogHeader>
-            <DialogTitle>Node Details</DialogTitle>
+            <DialogTitle>Select {`${selectedNode.data.label == "Trigger" ? "Triggers" : "Actions" }`}</DialogTitle>
             <DialogDescription>
               <div className="space-y-2">
-                <p><strong>ID:</strong> {selectedNode.id}</p>
-                <p><strong>Label:</strong> {selectedNode.data?.label}</p>
+               <SelectionModal modalFor={`${selectedNode.data.label == "Trigger" ? "Triggers" : "Actions" }`} data={selectedNode.data.label == "Trigger" ? availableTriggers : availableActions}/>
               </div>
             </DialogDescription>
           </DialogHeader>
@@ -85,4 +85,24 @@ export default function Page() {
     </Dialog>
   </div>
   );
+}
+
+const SelectionModal = ( { modalFor , data } : {
+    modalFor : "Triggers" | "Actions",
+    data: any[]
+} ) => {
+
+    const searchInputRef = useRef(null);
+
+    useEffect(()=> {
+        // (searchInputRef as unknown as HTMLInputElement).focus();
+        document.getElementById('searchBox')?.focus()  //TODO: fix this 
+    },[])
+
+    return <div>
+        <div className='flex'>
+            <SearchIcon className='mt-3'/>
+            <input type="text" ref={searchInputRef} id='searchBox' placeholder={`Search ${modalFor}`} className='border border-slate-50 p-2 w-full m-2' />
+        </div>
+    </div>
 }
