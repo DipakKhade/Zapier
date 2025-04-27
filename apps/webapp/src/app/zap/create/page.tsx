@@ -76,7 +76,7 @@ export default function Page() {
             <DialogTitle>Select {`${selectedNode.data.label == "Trigger" ? "Triggers" : "Actions" }`}</DialogTitle>
             <DialogDescription>
               <div className="space-y-2">
-               <SelectionModal modalFor={`${selectedNode.data.label == "Trigger" ? "Triggers" : "Actions" }`} data={selectedNode.data.label == "Trigger" ? availableTriggers : availableActions}/>
+               <SelectionModal modalFor={`${selectedNode.data.label == "Trigger" ? "Triggers" : "Actions" }`} data={selectedNode.data.label == "Trigger" ? availableTriggers : availableActions} setData={`${selectedNode.data.label == "Trigger" ? setAvailableTriggers : setAvailableActions }`}/>
               </div>
             </DialogDescription>
           </DialogHeader>
@@ -87,11 +87,13 @@ export default function Page() {
   );
 }
 
-const SelectionModal = ( { modalFor , data } : {
+const SelectionModal = ( { modalFor, data, setData } : {
     modalFor : "Triggers" | "Actions",
-    data: any[]
+    data: any[],
+    setData: (args:any) => void
 } ) => {
 
+    const [searchInput , setSearchInput] = useState<string| null>();
     const searchInputRef = useRef(null);
 
     useEffect(()=> {
@@ -99,10 +101,16 @@ const SelectionModal = ( { modalFor , data } : {
         document.getElementById('searchBox')?.focus()  //TODO: fix this 
     },[])
 
+    // const search = ( searchArgs: string ) => {
+    //     if(modalFor == "Actions") {
+    //         setData(data.filter(ele => ele.name.toLowerCase().includes(searchArgs.toLowerCase())))
+    //     }
+    // }
+
     return <div>
         <div className='flex'>
             <SearchIcon className='mt-3'/>
-            <input type="text" ref={searchInputRef} id='searchBox' placeholder={`Search ${modalFor}`} className='border border-slate-50 p-2 w-full m-2' />
+            <input type="text" ref={searchInputRef} id='searchBox' placeholder={`Search ${modalFor}`} className='border border-slate-50 p-2 w-full m-2' onChange={(e)=>setSearchInput(e.target.value)} />
         </div>
         <div className='space-x-2.5 grid grid-cols-2 space-y-2 pt-4'>
             {data.map((ele, index)=> {
