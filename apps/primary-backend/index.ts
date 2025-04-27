@@ -1,8 +1,8 @@
 import { PRIMARY_BACKEND_PORT } from "config/config";
 import express from "express";
-import userRouter from "./Routes/user";
-import zapRouter from "./Routes/zap";
 import cors from "cors";
+import userRouter from "./v1/Routes/user";
+import zapRouter from "./v1/Routes/zap";
 
 const PORT = process.env.PRIMARY_BACKEND_PORT || PRIMARY_BACKEND_PORT
 

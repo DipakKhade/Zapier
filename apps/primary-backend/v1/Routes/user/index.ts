@@ -32,6 +32,7 @@ userRouter.post('/signin', async(req,res)=>{
         })
 
         res.status(200).json({
+            success:true,
             message:"user created successfully",
             userId: new_user.id
         })
@@ -62,7 +63,7 @@ userRouter.post('/login', async(req, res)=>{
     
         if(!user){
             res.status(404).json({
-                message:"no user found with username " + parsedPaylaod.data.username  
+                message:"no user found with email " + parsedPaylaod.data.email  
             })
             return;
         }
