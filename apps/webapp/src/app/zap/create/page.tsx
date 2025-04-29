@@ -76,7 +76,7 @@ export default function Page() {
             <DialogTitle>Select {`${selectedNode.data.label == "Trigger" ? "Triggers" : "Actions" }`}</DialogTitle>
             <DialogDescription>
               <div className="space-y-2">
-               <SelectionModal modalFor={`${selectedNode.data.label == "Trigger" ? "Triggers" : "Actions" }`} data={selectedNode.data.label == "Trigger" ? availableTriggers : availableActions} setData={`${selectedNode.data.label == "Trigger" ? setAvailableTriggers : setAvailableActions }`}/>
+               <SelectionModal modalFor={`${selectedNode.data.label == "Trigger" ? "Triggers" : "Actions" }`} data={selectedNode.data.label == "Trigger" ? availableTriggers : availableActions} />
               </div>
             </DialogDescription>
           </DialogHeader>
@@ -87,36 +87,41 @@ export default function Page() {
   );
 }
 
-const SelectionModal = ( { modalFor, data, setData } : {
+const SelectionModal = ( { modalFor, data } : {
     modalFor : "Triggers" | "Actions",
-    data: any[],
-    setData: (args:any) => void
+    data: any[]
 } ) => {
 
     const [searchInput , setSearchInput] = useState<string| null>();
     const searchInputRef = useRef(null);
+    const backUpData = [...data];
+    const [localData, setLocalData] = useState<any[]>([...data]);
 
     useEffect(()=> {
         // (searchInputRef as unknown as HTMLInputElement).focus();    
         document.getElementById('searchBox')?.focus()  //TODO: fix this 
     },[])
 
-    // const search = ( searchArgs: string ) => {
-    //     if(modalFor == "Actions") {
-    //         setData(data.filter(ele => ele.name.toLowerCase().includes(searchArgs.toLowerCase())))
-    //     }
-    // }
+    const search = ( searchArgs: string ) => {
+      setLocalData(backUpData.filter(x=>x.name.toLowerCase().includes(searchArgs.trim().toLowerCase())))
+    }
 
     return <div>
         <div className='flex'>
             <SearchIcon className='mt-3'/>
-            <input type="text" ref={searchInputRef} id='searchBox' placeholder={`Search ${modalFor}`} className='border border-slate-50 p-2 w-full m-2' onChange={(e)=>setSearchInput(e.target.value)} />
+            <input type="text" ref={searchInputRef} id='searchBox' placeholder={`Search ${modalFor}`} className='border border-slate-50 p-2 w-full m-2' onChange={(e)=>{
+              search(e.target.value);
+              setSearchInput(e.target.value);
+            }} />
         </div>
         <div className='space-x-2.5 grid grid-cols-2 space-y-2 pt-4'>
-            {data.map((ele, index)=> {
-                return <button key={index} className='cursor-pointer font-bold text-lg text-start'>
+            {localData.map((ele, index)=> {
+                return <div key={index} className='flex items-center justify-center space-y-2 p-2'>
+                  <img src={ele.image} className='w-10 h-10 rounded-full' />
+                  <button className='cursor-pointer font-bold text-lg text-start'>
                     {ele.name}
                 </button>
+                </div>
             })}
         </div>
     </div>
