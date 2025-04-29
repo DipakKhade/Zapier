@@ -32,64 +32,147 @@ const initialNodes : Node[] = [
 const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
  
 export default function Page() {
-  const [nodes, setNodes, onNodesChange] = useNodesState(initialNodes);
+  const [nodes, setNodes, onNodesChange] = useNodesState([
+    { id: '1', position: { x: 358, y: 112 }, data: { label: 'Trigger' } },
+    { id: '2', position: { x: 358, y: 192 }, data: { label: 'Action' } },
+  ]);
+  
+  const initialEdges = [
+    { id: 'e1-2', source: '1', target: '2', type: 'smoothstep' },
+  ];
+  
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [availableTriggers, setAvailableTriggers] = useState([]);
   const [availableActions, setAvailableActions] = useState([]);
-
+  const [selectedTrigger, setSelectedTrigger] = useState<any>([]);
+  const [selectedActions, setSelectedActions] = useState<any>([]);
 
   const onConnect = useCallback<(args:Connection)=>void>(
-    (params) => setEdges((eds) => addEdge(params, eds)),
+    (params) => setEdges((eds) => addEdge({ ...params, type: 'smoothstep' }, eds)),
     [setEdges],
   );
  
   const onNodeClick = useCallback(async (_event: any, node: Node) => {
-    if( node.data.label == "Trigger" ) {
-        setAvailableActions(await get_available_triggers());
-    } else if( node.data.label == "Action" ) {
-        setAvailableTriggers(await get_available_actions());
+    if (node.data.label === "Trigger") {
+        setAvailableTriggers(await get_available_triggers());
+    } else if (node.data.label === "Action") {
+        setAvailableActions(await get_available_actions());
     }
     setSelectedNode(node);
     setDialogOpen(true);
   }, []);
 
+  const addNodeBelow = useCallback(() => {
+    const nodeIds = nodes.map(n => parseInt(n.id));
+    const maxId = Math.max(...nodeIds);
+    const newId = (maxId + 1).toString();
+    const sortedNodes = [...nodes].sort((a, b) => a.position.y - b.position.y);
+    const lastNode = sortedNodes[sortedNodes.length - 1];
+    const newX = lastNode.position.x;
+    const newY = lastNode.position.y + 80;
+    
+    const newNode = {
+      id: newId,
+      position: { x: newX, y: newY },
+      data: { label: 'Action' }
+    };
+    
+    setNodes(nds => [...nds, newNode]);
+    
+    setEdges(eds => [
+      ...eds,
+      { id: `e${lastNode.id}-${newId}`, source: lastNode.id, target: newId, type: 'smoothstep' }
+    ]);
+  }, [nodes, setNodes, setEdges]);
  
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-    <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-      <ReactFlow
-        nodes={nodes}
-        edges={edges}
-        onNodesChange={onNodesChange}
-        onEdgesChange={onEdgesChange}
-        onConnect={onConnect}
-        onNodeClick={onNodeClick}
-      >
-        <Background variant={BackgroundVariant.Dots} gap={15} size={0.7} />
-      </ReactFlow>
+      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <ReactFlow
+          nodes={nodes}
+          edges={edges}
+          onNodesChange={onNodesChange}
+          onEdgesChange={onEdgesChange}
+          onConnect={onConnect}
+          onNodeClick={onNodeClick}
+          fitView
+        >
+          <Background variant={BackgroundVariant.Dots} gap={15} size={0.7} />
+          
+          {edges.map((edge) => {
+            const sourceNode = nodes.find((n) => n.id === edge.source);
+            const targetNode = nodes.find((n) => n.id === edge.target);
+            
+            if (!sourceNode || !targetNode) return null;
+            
+            const sortedNodes = [...nodes].sort((a, b) => a.position.y - b.position.y);
+            const lastNode = sortedNodes[sortedNodes.length - 1];
+            
+            if (targetNode.id === lastNode.id) {
+              const midX = sourceNode.position.x - 30; 
+              const midY = (sourceNode.position.y + targetNode.position.y) / 2;
+              
+              return (
+                <div
+                  key={`plus-${edge.id}`}
+                  style={{
+                    position: 'absolute',
+                    left: midX,
+                    top: midY,
+                    zIndex: 10,
+                  }}
+                >
+                  <button
+                    onClick={addNodeBelow}
+                    style={{
+                      background: '#fff',
+                      border: '1px solid #ccc',
+                      borderRadius: '50%',
+                      width: 28,
+                      height: 28,
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      fontSize: 16,
+                      cursor: 'pointer',
+                      boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                    }}
+                  >
+                    +
+                  </button>
+                </div>
+              );
+            }
+            return null;
+          })}
+        </ReactFlow>
 
-      {selectedNode && (
-        <DialogContent>
-          <DialogHeader>
-            <DialogTitle>Select {`${selectedNode.data.label == "Trigger" ? "Triggers" : "Actions" }`}</DialogTitle>
-            <DialogDescription>
-              <div className="space-y-2">
-               <SelectionModal modalFor={`${selectedNode.data.label == "Trigger" ? "Triggers" : "Actions" }`} data={selectedNode.data.label == "Trigger" ? availableTriggers : availableActions} />
-              </div>
-            </DialogDescription>
-          </DialogHeader>
-        </DialogContent>
-      )}
-    </Dialog>
-  </div>
+        {selectedNode && (
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>Select {selectedNode.data.label === "Trigger" ? "Triggers" : "Actions"}</DialogTitle>
+              <DialogDescription>
+                <div className="space-y-2">
+                  <SelectionModal 
+                    modalFor={selectedNode.data.label === "Trigger" ? "Triggers" : "Actions"} 
+                    data={selectedNode.data.label === "Trigger" ? availableTriggers : availableActions} 
+                  />
+                </div>
+              </DialogDescription>
+            </DialogHeader>
+          </DialogContent>
+        )}
+      </Dialog>
+    </div>
   );
 }
 
 const SelectionModal = ( { modalFor, data } : {
     modalFor : "Triggers" | "Actions",
-    data: any[]
+    data: any[],
+    // setSelectedData: (args:any) => void;
 } ) => {
 
     const [searchInput , setSearchInput] = useState<string| null>();
