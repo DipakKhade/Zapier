@@ -50,7 +50,7 @@ export default function Page() {
   );
  
   const onNodeClick = useCallback(async (_event: any, node: Node) => {
-    if (node.data.label === "Trigger" || node.data.label == selectedTrigger[0]?.name) {
+    if (node.data.label === "Trigger" || (node.data.label == ( selectedTrigger && selectedTrigger[0]?.name ? selectedTrigger[0]?.name : " "))) {
         setAvailableTriggers(await get_available_triggers());
     } else if (node.data.label === "Action") {
         setAvailableActions(await get_available_actions());
@@ -70,7 +70,16 @@ export default function Page() {
     if(modalFor === "Triggers"){
         setSelectedTrigger(selected)
     } else if(modalFor === "Actions"){
-        setSelectedActions(selected)
+        // setSelectedActions(selected)
+        setSelectedActions(prev =>{
+          const updatedActions = [...prev];
+          updatedActions.push({
+            id: selected[0].id,
+            name: selected[0].name,
+            image: selected[0].image
+          })
+          return updatedActions
+        })
         console.log("if control", selectedActions)
     }
   } 
@@ -237,7 +246,7 @@ const SelectionModal = ( { modalFor, data, setSelectedData, handleClose } : {
             {localData.map((ele, index)=> {
                 return <div key={index}>
                   <button className='cursor-pointer font-bold text-lg text-start flex items-center justify-center space-y-2 p-2' onClick={()=>{
-                    setSelectedData([{...ele}])
+                    // setSelectedData([{...ele}])
                     handleClose(modalFor,[{...ele}])
                   }}>
                     <img src={ele.image} className='w-10 h-10 rounded-full' />
