@@ -21,15 +21,10 @@ interface Node {
         y : number
     },
     data:{
-        label:string
+        label:string,
+        // display:string
     }
 }
- 
-const initialNodes : Node[] = [
-  { id: '1', position: { x: 800, y: 100 }, data: { label: 'Trigger' } },
-  { id: '2', position: { x: 800, y: 200 }, data: { label: 'Action' } },
-];
-const initialEdges = [{ id: 'e1-2', source: '1', target: '2' }];
  
 export default function Page() {
   const [nodes, setNodes, onNodesChange] = useNodesState([
@@ -46,7 +41,7 @@ export default function Page() {
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
   const [availableTriggers, setAvailableTriggers] = useState([]);
   const [availableActions, setAvailableActions] = useState([]);
-  const [selectedTrigger, setSelectedTrigger] = useState<any>([]);
+  const [selectedTrigger, setSelectedTrigger] = useState<any>(null);
   const [selectedActions, setSelectedActions] = useState<any>([]);
 
   const onConnect = useCallback<(args:Connection)=>void>(
@@ -55,7 +50,7 @@ export default function Page() {
   );
  
   const onNodeClick = useCallback(async (_event: any, node: Node) => {
-    if (node.data.label === "Trigger") {
+    if (node.data.label === "Trigger" || node.data.label == selectedTrigger[0]?.name) {
         setAvailableTriggers(await get_available_triggers());
     } else if (node.data.label === "Action") {
         setAvailableActions(await get_available_actions());
@@ -63,6 +58,43 @@ export default function Page() {
     setSelectedNode(node);
     setDialogOpen(true);
   }, []);
+
+  const handleOpenChange = (open: boolean) => {
+   setDialogOpen(open)
+   console.log(selectedTrigger)
+  }
+
+  const handleClose = (modalFor : "Triggers" | "Actions", selected:any) => {
+    setDialogOpen(false)
+    console.log("Dialog was closed", selectedTrigger)
+    if(modalFor === "Triggers"){
+        setSelectedTrigger(selected)
+    } else if(modalFor === "Actions"){
+        setSelectedActions(selected)
+        console.log("if control", selectedActions)
+    }
+  } 
+
+  useEffect(() => {
+    if (selectedTrigger !== null) {
+      const newNodes:Node[] = nodes.map((node,index)=>{
+        if(index == 0){
+         return {
+           ...node,
+           data: {
+            label: selectedTrigger[0]?.name
+           }
+         }
+        }
+        return {
+          ...node
+        }
+      })
+      setNodes((nodes:any) => newNodes)
+      // nodes[0].data.label = selectedTrigger[0]?.name
+      console.log("nodes", nodes)
+    }
+  }, [selectedTrigger]);
 
   const addNodeBelow = useCallback(() => {
     const nodeIds = nodes.map(n => parseInt(n.id));
@@ -89,7 +121,7 @@ export default function Page() {
  
   return (
     <div style={{ width: '100vw', height: '100vh' }}>
-      <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
+      <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
         <ReactFlow
           nodes={nodes}
           edges={edges}
@@ -111,7 +143,7 @@ export default function Page() {
             const lastNode = sortedNodes[sortedNodes.length - 1];
             
             if (targetNode.id === lastNode.id) {
-              const midX = sourceNode.position.x - 30; 
+              const midX = sourceNode.position.x - 30;  
               const midY = (sourceNode.position.y + targetNode.position.y) / 2;
               
               return (
@@ -138,9 +170,10 @@ export default function Page() {
                       fontSize: 16,
                       cursor: 'pointer',
                       boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                      color:'blue'
                     }}
                   >
-                    +
+                    + 
                   </button>
                 </div>
               );
@@ -152,12 +185,14 @@ export default function Page() {
         {selectedNode && (
           <DialogContent>
             <DialogHeader>
-              <DialogTitle>Select {selectedNode.data.label === "Trigger" ? "Triggers" : "Actions"}</DialogTitle>
+              <DialogTitle>Select {selectedNode.data.label === "Trigger" ? "Trigger" : "Action"}</DialogTitle>
               <DialogDescription>
                 <div className="space-y-2">
                   <SelectionModal 
                     modalFor={selectedNode.data.label === "Trigger" ? "Triggers" : "Actions"} 
                     data={selectedNode.data.label === "Trigger" ? availableTriggers : availableActions} 
+                    setSelectedData={selectedNode.data.label === "Trigger" ? setSelectedTrigger : setSelectedActions}
+                    handleClose={handleClose}
                   />
                 </div>
               </DialogDescription>
@@ -169,10 +204,11 @@ export default function Page() {
   );
 }
 
-const SelectionModal = ( { modalFor, data } : {
+const SelectionModal = ( { modalFor, data, setSelectedData, handleClose } : {
     modalFor : "Triggers" | "Actions",
     data: any[],
-    // setSelectedData: (args:any) => void;
+    setSelectedData: (args:any) => void,
+    handleClose: (modalFor : "Triggers" | "Actions", selected:any) => void
 } ) => {
 
     const [searchInput , setSearchInput] = useState<string| null>();
@@ -199,10 +235,13 @@ const SelectionModal = ( { modalFor, data } : {
         </div>
         <div className='space-x-2.5 grid grid-cols-2 space-y-2 pt-4'>
             {localData.map((ele, index)=> {
-                return <div key={index} className='flex items-center justify-center space-y-2 p-2'>
-                  <img src={ele.image} className='w-10 h-10 rounded-full' />
-                  <button className='cursor-pointer font-bold text-lg text-start'>
-                    {ele.name}
+                return <div key={index}>
+                  <button className='cursor-pointer font-bold text-lg text-start flex items-center justify-center space-y-2 p-2' onClick={()=>{
+                    setSelectedData([{...ele}])
+                    handleClose(modalFor,[{...ele}])
+                  }}>
+                    <img src={ele.image} className='w-10 h-10 rounded-full' />
+                    <div>{ele.name}</div>
                 </button>
                 </div>
             })}
