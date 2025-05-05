@@ -13,6 +13,7 @@ import '@xyflow/react/dist/style.css';
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription, Dialog } from '@/components/dialog';
 import { get_available_actions, get_available_triggers } from '@/lib/common-functions';
 import { SearchIcon } from 'lucide-react';
+import { ZapMetadataSidebar } from '@/components/zap-metadata-sidebar';
 
 interface Node {
     id: string,
@@ -43,6 +44,8 @@ export default function Page() {
   const [availableActions, setAvailableActions] = useState([]);
   const [selectedTrigger, setSelectedTrigger] = useState<any>(null);
   const [selectedActions, setSelectedActions] = useState<any>([]);
+  const [metadata, setMetadata] = useState<any>({});
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
   const onConnect = useCallback<(args:Connection)=>void>(
     (params) => setEdges((eds) => addEdge({ ...params, type: 'smoothstep' }, eds)),
@@ -103,6 +106,8 @@ export default function Page() {
         console.log("selected trigger", selectedTrigger)
         console.log("selected actions", selectedActions)
     }
+
+    setIsSidebarOpen(true)
   } 
 
   useEffect(() => {
@@ -231,6 +236,15 @@ export default function Page() {
           </DialogContent>
         )}
       </Dialog>
+
+      {
+        isSidebarOpen && <ZapMetadataSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} title="Zap Metadata">
+          <div>
+            asdf
+          </div>
+        </ZapMetadataSidebar>
+
+      }
     </div>
   );
 }
