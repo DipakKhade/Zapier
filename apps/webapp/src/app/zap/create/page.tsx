@@ -71,9 +71,9 @@ export default function Page() {
         setSelectedTrigger(selected)
     } else if(modalFor === "Actions"){
         // setSelectedActions(selected)
-        const targetNodeIndex = nodes.findIndex((n) => n.id === selectedNode.id);
+        const targetNodeIndex = nodes.findIndex((node: Node) => node.id === selectedNode.id);
         const targetNodeId = nodes[targetNodeIndex].id;
-        const updatedNodes = nodes.map((node: Node, index: number) => {
+        const updatedNodes = nodes.map((node: Node) => {
           if(node.id == targetNodeId){
             return {
               ...node,
@@ -88,24 +88,20 @@ export default function Page() {
           }
         })
 
-        setNodes(prev=>{
+        setNodes(prev => {
+          return [...updatedNodes]
         })
-        setSelectedActions(prev =>{
+
+        setSelectedActions(prev => {
           const updatedActions = [...prev];
-         
           updatedActions.push(selected[0])
+          console.log("updated actions", updatedActions)
           return updatedActions
-        })
-        
-        setNodes(prev=>{
-          const updatedNodes = [...prev];
-          updatedNodes[0].data.label = selected[0].name
-          return updatedNodes
         })
 
         console.log("if control", nodes)
-        
-
+        console.log("selected trigger", selectedTrigger)
+        console.log("selected actions", selectedActions)
     }
   } 
 
@@ -223,7 +219,7 @@ export default function Page() {
               <DialogDescription>
                 <div className="space-y-2">
                   <SelectionModal 
-                    modalFor={selectedNode.data.label === "Trigger" ? "Triggers" : "Actions"} 
+                    modalFor={selectedNode.id === "1" ? "Triggers" : "Actions"}
                     data={selectedNode.data.label === "Trigger" ? availableTriggers : availableActions} 
                     setSelectedData={selectedNode.data.label === "Trigger" ? setSelectedTrigger : setSelectedActions}
                     handleClose={handleClose}
@@ -243,7 +239,7 @@ const SelectionModal = ( { modalFor, data, setSelectedData, handleClose, selecte
     modalFor : "Triggers" | "Actions",
     data: any[],
     setSelectedData: (args:any) => void,
-    handleClose: (modalFor : "Triggers" | "Actions", selected:any) => void,
+    handleClose: (modalFor : "Triggers" | "Actions", selected:any, selectedNode: Node) => void,
     selectedNode : any
 } ) => {
 
@@ -280,7 +276,7 @@ const SelectionModal = ( { modalFor, data, setSelectedData, handleClose, selecte
                     <div>{ele.name}</div>
                 </button>
                 </div>
-            })}
+            })} 
         </div>
     </div>
 }
