@@ -50,9 +50,9 @@ export default function Page() {
   );
  
   const onNodeClick = useCallback(async (_event: any, node: Node) => {
-    if (node.data.label === "Trigger" || (node.data.label == ( selectedTrigger && selectedTrigger[0]?.name ? selectedTrigger[0]?.name : " "))) {
+    if (node.id === "1") {
         setAvailableTriggers(await get_available_triggers());
-    } else if (node.data.label === "Action") {
+    } else {
         setAvailableActions(await get_available_actions());
     }
     setSelectedNode(node);
