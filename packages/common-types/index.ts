@@ -16,7 +16,8 @@ const zapSchema = z.object({
     actions:z.array(z.object({
         availableActionId: z.string(),
         metadata: z.any().optional()
-    }))
+    })),
+    metadata:z.any().optional()
 })
 
 type signUpType = z.infer<typeof signUpSchema>

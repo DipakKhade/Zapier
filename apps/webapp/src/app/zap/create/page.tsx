@@ -64,23 +64,48 @@ export default function Page() {
    console.log(selectedTrigger)
   }
 
-  const handleClose = (modalFor : "Triggers" | "Actions", selected:any) => {
+  const handleClose = (modalFor : "Triggers" | "Actions", selected:any, selectedNode: any) => {
     setDialogOpen(false)
     console.log("Dialog was closed", selectedTrigger)
     if(modalFor === "Triggers"){
         setSelectedTrigger(selected)
     } else if(modalFor === "Actions"){
         // setSelectedActions(selected)
+        const targetNodeIndex = nodes.findIndex((n) => n.id === selectedNode.id);
+        const targetNodeId = nodes[targetNodeIndex].id;
+        const updatedNodes = nodes.map((node: Node, index: number) => {
+          if(node.id == targetNodeId){
+            return {
+              ...node,
+              data: {
+                label: selected[0].name
+              }
+            }
+          } else {
+            return {
+              ...node
+            }
+          }
+        })
+
+        setNodes(prev=>{
+        })
         setSelectedActions(prev =>{
           const updatedActions = [...prev];
-          updatedActions.push({
-            id: selected[0].id,
-            name: selected[0].name,
-            image: selected[0].image
-          })
+         
+          updatedActions.push(selected[0])
           return updatedActions
         })
-        console.log("if control", selectedActions)
+        
+        setNodes(prev=>{
+          const updatedNodes = [...prev];
+          updatedNodes[0].data.label = selected[0].name
+          return updatedNodes
+        })
+
+        console.log("if control", nodes)
+        
+
     }
   } 
 
@@ -202,6 +227,7 @@ export default function Page() {
                     data={selectedNode.data.label === "Trigger" ? availableTriggers : availableActions} 
                     setSelectedData={selectedNode.data.label === "Trigger" ? setSelectedTrigger : setSelectedActions}
                     handleClose={handleClose}
+                    selectedNode = {selectedNode}
                   />
                 </div>
               </DialogDescription>
@@ -213,11 +239,12 @@ export default function Page() {
   );
 }
 
-const SelectionModal = ( { modalFor, data, setSelectedData, handleClose } : {
+const SelectionModal = ( { modalFor, data, setSelectedData, handleClose, selectedNode  } : {
     modalFor : "Triggers" | "Actions",
     data: any[],
     setSelectedData: (args:any) => void,
-    handleClose: (modalFor : "Triggers" | "Actions", selected:any) => void
+    handleClose: (modalFor : "Triggers" | "Actions", selected:any) => void,
+    selectedNode : any
 } ) => {
 
     const [searchInput , setSearchInput] = useState<string| null>();
@@ -247,7 +274,7 @@ const SelectionModal = ( { modalFor, data, setSelectedData, handleClose } : {
                 return <div key={index}>
                   <button className='cursor-pointer font-bold text-lg text-start flex items-center justify-center space-y-2 p-2' onClick={()=>{
                     // setSelectedData([{...ele}])
-                    handleClose(modalFor,[{...ele}])
+                    handleClose(modalFor,[{...ele}], selectedNode)
                   }}>
                     <img src={ele.image} className='w-10 h-10 rounded-full' />
                     <div>{ele.name}</div>

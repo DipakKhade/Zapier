@@ -44,7 +44,7 @@ zapRouter.post('/create', authMiddleware, async(req,res)=>{
                     create:{
                         availableTriggerId:parsedPaylaod.data.availableTriggerId,
                     }
-                },
+                },      
                 action:{
                     create:parsedPaylaod.data.actions.map((a,index)=>{
                         return{
@@ -53,7 +53,12 @@ zapRouter.post('/create', authMiddleware, async(req,res)=>{
                         }
                     })
                 },
-                userId:req.userId!
+                userId:req.userId!,
+                zapRun: {
+                    create: {
+                        metadata:parsedPaylaod.data.metadata,
+                    }
+                }
             }
         })
 
