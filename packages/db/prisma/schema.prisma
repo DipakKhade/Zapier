@@ -28,6 +28,7 @@ model Zap {
   userId              String
   user                User @relation(fields: [userId], references: [id])
   zapRun              ZapRun[]
+  createdAt           DateTime @default(now())
 }
 
 model Trigger {
