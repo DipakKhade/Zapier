@@ -1,5 +1,5 @@
 'use client';
-import React, { useCallback, useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   ReactFlow,
   Background,
@@ -46,6 +46,7 @@ export default function Page() {
   const [selectedActions, setSelectedActions] = useState<any>([]);
   const [metadata, setMetadata] = useState<any>({});
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [metaDataFor, setMetaDataFor] = useState<any>(null);
 
   const onConnect = useCallback<(args:Connection)=>void>(
     (params) => setEdges((eds) => addEdge({ ...params, type: 'smoothstep' }, eds)),
@@ -73,7 +74,6 @@ export default function Page() {
     if(modalFor === "Triggers"){
         setSelectedTrigger(selected)
     } else if(modalFor === "Actions"){
-        // setSelectedActions(selected)
         const targetNodeIndex = nodes.findIndex((node: Node) => node.id === selectedNode.id);
         const targetNodeId = nodes[targetNodeIndex].id;
         const updatedNodes = nodes.map((node: Node) => {
@@ -108,6 +108,7 @@ export default function Page() {
     }
 
     setIsSidebarOpen(true)
+    setMetaDataFor(selected)
   } 
 
   useEffect(() => {
@@ -226,7 +227,6 @@ export default function Page() {
                   <SelectionModal 
                     modalFor={selectedNode.id === "1" ? "Triggers" : "Actions"}
                     data={selectedNode.data.label === "Trigger" ? availableTriggers : availableActions} 
-                    setSelectedData={selectedNode.data.label === "Trigger" ? setSelectedTrigger : setSelectedActions}
                     handleClose={handleClose}
                     selectedNode = {selectedNode}
                   />
@@ -239,9 +239,7 @@ export default function Page() {
 
       {
         isSidebarOpen && <ZapMetadataSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} title="Zap Metadata">
-          <div>
-            asdf
-          </div>
+          <MetadataModal metaDataFor={metaDataFor} />
         </ZapMetadataSidebar>
 
       }
@@ -249,16 +247,13 @@ export default function Page() {
   );
 }
 
-const SelectionModal = ( { modalFor, data, setSelectedData, handleClose, selectedNode  } : {
+const SelectionModal = ( { modalFor, data, handleClose, selectedNode  } : {
     modalFor : "Triggers" | "Actions",
     data: any[],
-    setSelectedData: (args:any) => void,
     handleClose: (modalFor : "Triggers" | "Actions", selected:any, selectedNode: Node) => void,
     selectedNode : any
 } ) => {
 
-    const [searchInput , setSearchInput] = useState<string| null>();
-    const searchInputRef = useRef(null);
     const backUpData = [...data];
     const [localData, setLocalData] = useState<any[]>([...data]);
 
@@ -274,9 +269,8 @@ const SelectionModal = ( { modalFor, data, setSelectedData, handleClose, selecte
     return <div>
         <div className='flex'>
             <SearchIcon className='mt-3'/>
-            <input type="text" ref={searchInputRef} id='searchBox' placeholder={`Search ${modalFor}`} className='border border-slate-50 p-2 w-full m-2' onChange={(e)=>{
+            <input type="text" id='searchBox' placeholder={`Search ${modalFor}`} className='border border-slate-50 p-2 w-full m-2' onChange={(e)=>{
               search(e.target.value);
-              setSearchInput(e.target.value);
             }} />
         </div>
         <div className='space-x-2.5 grid grid-cols-2 space-y-2 pt-4'>
@@ -293,4 +287,16 @@ const SelectionModal = ( { modalFor, data, setSelectedData, handleClose, selecte
             })} 
         </div>
     </div>
+}
+
+const MetadataModal = ({metaDataFor}:{
+  metaDataFor: any
+}) =>{
+  return <div>
+    <div className='flex items-center justify-center space-y-2 p-2'>
+      <div><img src={metaDataFor[0].image} alt="img" className="w-10 h-10 rounded-full" /></div>
+      <div>{metaDataFor[0].name}</div>
+    </div>
+    {JSON.stringify(metaDataFor)}
+  </div>
 }
