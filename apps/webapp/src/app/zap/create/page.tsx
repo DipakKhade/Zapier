@@ -12,10 +12,11 @@ import {
 import '@xyflow/react/dist/style.css';
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription, Dialog } from '@/components/dialog';
 import { get_available_actions, get_available_triggers } from '@/lib/common-functions';
-import { SearchIcon } from 'lucide-react';
+import { Router, SearchIcon } from 'lucide-react';
 import { ZapMetadataSidebar } from '@/components/zap-metadata-sidebar';
 import { ZapCreateHeader } from '@/components/zap-create-header';
 import { PRIMARY_BACKEND_URL } from 'config/config';
+import { useRouter } from 'next/navigation';
 
 interface Node {
     id: string,
@@ -39,6 +40,7 @@ export default function Page() {
     { id: 'e1-2', source: '1', target: '2', type: 'smoothstep' },
   ];
   
+  const router = useRouter();
   const [edges, setEdges, onEdgesChange] = useEdgesState(initialEdges);
   const [dialogOpen, setDialogOpen] = useState(false);
   const [selectedNode, setSelectedNode] = useState<Node | null>(null);
@@ -179,6 +181,9 @@ export default function Page() {
     });
     const data = await res.json();
     console.log("data", data)
+    if(data.success){
+      router.push('/dashboard')
+    }
   }
  
   return (

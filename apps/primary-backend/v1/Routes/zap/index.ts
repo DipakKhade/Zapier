@@ -13,6 +13,7 @@ zapRouter.get('/zapRuns', authMiddleware, async(req,res)=>{
             },
             select: {
                 id:true,
+                createdAt:true,
                 trigger:{
                     select: {
                         type:{
@@ -83,6 +84,7 @@ zapRouter.post('/create', authMiddleware, async(req,res)=>{
         })
 
         res.json({
+            success:true,
             message:"zap created",
             zapId:zap.id
         })

@@ -4,7 +4,9 @@ import { ZapList } from "@/components/zap-list";
 export default function Page(){
 
     return <>
-<Sidebar/>
-    <ZapList/>
+    <div className="flex">
+        <Sidebar/>
+        <ZapList/>
+    </div>
     </>
 }
