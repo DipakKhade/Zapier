@@ -7,17 +7,37 @@ const zapRouter = Router();
 
 zapRouter.get('/zapRuns', authMiddleware, async(req,res)=>{
     try{
-        const zap_runs = await prisma.zap.findMany({
-            where:{
-                userId:req.userId
+        const zaps = await prisma.zap.findMany({
+            where: {
+                userId:req.userId,
             },
-            include:{
-                trigger:true,
-                action:true
+            select: {
+                id:true,
+                trigger:{
+                    select: {
+                        type:{
+                            select: {
+                                name:true,
+                                image:true
+                            }
+                        }
+                    }
+                },
+                action:{
+                    select: {
+                        type: {
+                            select: {
+                                image:true,
+                                name:true
+                            }
+                        },
+                        sortingOrder:true
+                    }
+                }
             }
         })
         res.json({
-            data:zap_runs
+            data:zaps
         })
         return;
 

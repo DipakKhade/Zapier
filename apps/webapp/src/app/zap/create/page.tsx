@@ -14,6 +14,8 @@ import { DialogContent, DialogHeader, DialogTitle, DialogDescription, Dialog } f
 import { get_available_actions, get_available_triggers } from '@/lib/common-functions';
 import { SearchIcon } from 'lucide-react';
 import { ZapMetadataSidebar } from '@/components/zap-metadata-sidebar';
+import { ZapCreateHeader } from '@/components/zap-create-header';
+import { PRIMARY_BACKEND_URL } from 'config/config';
 
 interface Node {
     id: string,
@@ -154,8 +156,34 @@ export default function Page() {
       { id: `e${lastNode.id}-${newId}`, source: lastNode.id, target: newId, type: 'smoothstep' }
     ]);
   }, [nodes, setNodes, setEdges]);
+
+  const onPublish = async () => {
+    const res = await fetch(`${PRIMARY_BACKEND_URL}/api/v1/zap/create`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'authorization': `Bearer ${localStorage.getItem('token')}`
+      },
+      body: JSON.stringify({
+        payload: {
+          availableTriggerId: selectedTrigger[0].id,
+          actions: selectedActions.map((action:any)=>{
+            return {
+              availableActionId: action.id,
+              metadata: {}
+            }
+          }),
+          metadata: {}
+        }
+      })
+    });
+    const data = await res.json();
+    console.log("data", data)
+  }
  
   return (
+    <>
+    <ZapCreateHeader onPublish={onPublish} />
     <div style={{ width: '100vw', height: '100vh' }}>
       <Dialog open={dialogOpen} onOpenChange={handleOpenChange}>
         <ReactFlow
@@ -216,6 +244,7 @@ export default function Page() {
             }
             return null;
           })}
+
         </ReactFlow>
 
         {selectedNode && (
@@ -238,12 +267,13 @@ export default function Page() {
       </Dialog>
 
       {
-        isSidebarOpen && <ZapMetadataSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} title="Zap Metadata">
+        isSidebarOpen && <ZapMetadataSidebar isOpen={isSidebarOpen} onClose={() => setIsSidebarOpen(false)} >
           <MetadataModal metaDataFor={metaDataFor} />
         </ZapMetadataSidebar>
-
       }
+
     </div>
+    </>
   );
 }
 

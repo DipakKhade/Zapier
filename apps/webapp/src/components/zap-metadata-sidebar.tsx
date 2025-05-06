@@ -1,10 +1,9 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
 import { X } from 'lucide-react';
 
-export const ZapMetadataSidebar = ({ isOpen, onClose, title, children }:{
+export const ZapMetadataSidebar = ({ isOpen, onClose, children }:{
     isOpen: boolean,
     onClose: () => void,
-    title?: string,
     children: React.ReactNode
 }) => {
     useEffect(() => {
