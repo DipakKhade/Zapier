@@ -7,7 +7,7 @@ export const ZapMetadataSidebar = ({ isOpen, onClose, children }:{
     children: React.ReactNode
 }) => {
     useEffect(() => {
-      const handleEscKey = (event) => {
+      const handleEscKey = (event:KeyboardEvent) => {
         if (event.key === 'Escape' && isOpen) {
           onClose();
         }
