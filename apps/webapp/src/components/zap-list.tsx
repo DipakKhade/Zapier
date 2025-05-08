@@ -39,30 +39,31 @@ export const ZapList = () =>{
     },[])
 
     return <>
-    <div className="flex space-y-10 pt-24 w-full">
-        {/* <span className="text-slate-900 font-semibold text-2xl">Zaps</span> */}
+    <div className="flex-col space-y-10 pt-2 w-full justify-center">
+        <span className="text-slate-900 font-semibold text-2xl flex items-center justify-center">Zap List</span>
 
         <table className="border-collapse border border-gray-400 w-full">
-  <thead>
-    <tr>
-      <th className="border border-gray-300">Zap</th>
-      <th className="border border-gray-300">Zap Id</th>
-      <th className="border border-gray-300">Create Date</th>
-    </tr>
-  </thead>
-  <tbody>
-    
-         {zaps.map((zap)=>{
-            return <tr key={zap.id}>
-            <td className="border border-gray-300">
-                <Zap key={zap.id} zap={zap}/>
-            </td>
-            <td className="border border-gray-300">{zap.id}</td>
-            <td className="border border-gray-300">{zap.createdAt}</td>
-            </tr>
-        })}
-  </tbody>
-</table>
+            <thead>
+                <tr>
+                <th className="border border-gray-300">Zap</th>
+                <th className="border border-gray-300">Zap Id</th>
+                <th className="border border-gray-300">Web hook</th>
+                <th className="border border-gray-300">Create Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                    {zaps.map((zap)=>{
+                        return <tr key={zap.id}>
+                        <td className="border border-gray-300">
+                            <Zap key={zap.id} zap={zap}/>
+                        </td>
+                        <td className="border border-gray-300">{zap.id}</td>
+                        <td className="border border-gray-300">hook url</td>
+                        <td className="border border-gray-300">{zap.createdAt}</td>
+                        </tr>
+                    })}
+            </tbody>
+        </table>
     </div>
     </>
 }

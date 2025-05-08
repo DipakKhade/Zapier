@@ -28,7 +28,7 @@ interface Node {
         label:string,
         // display:string
     }
-}
+} 
  
 export default function Page() {
   const [nodes, setNodes, onNodesChange] = useNodesState([
