@@ -1,8 +1,59 @@
 import express from "express";
 import { prisma } from "db/client";
 import { HOOKS_PORT } from "config/config"
+import { randomUUIDv7 } from "bun";
+
 const app = express();
 const PORT = process.env.HOOKS_PORT || HOOKS_PORT
+
+app.post('/hooks/getTestHook/:userId', async(req,res)=>{
+    const userId = req.params.userId;
+    const current_hook_test_id = randomUUIDv7();
+   try{
+        const hook_tes = await prisma.hookTest.create({
+            data:{
+                uuid:current_hook_test_id,
+                userId
+            }
+        })
+   } catch(error){
+       throw error
+   }
+
+    res.json({
+        message:"zap triggers successfully",
+        hook_test_id: current_hook_test_id
+    })
+    return;
+})
+
+app.post('/hooks/catch/test/:userId/:hookId', async(req, res)=> {
+    const userId = req.params.userId;
+    const hookId = req.params.hookId;
+
+    const metadata = req.body
+
+    try{
+        await prisma.hookTest.update({
+            where:{
+                userId,
+                uuid:hookId
+            },
+            data: {
+                metadata
+            }
+        })
+
+        res.json({
+            message:"zap triggers successfully",
+        })
+        return;
+    }catch (error){
+        throw error
+    }
+
+})
+
 
 app.post('/hooks/catch/:userId/:zapId', async(req,res)=>{
     const userId = req.params.userId;
