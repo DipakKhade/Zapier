@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+
 import { X } from 'lucide-react';
 
 export const ZapMetadataSidebar = ({ isOpen, onClose, children }:{
@@ -6,40 +6,9 @@ export const ZapMetadataSidebar = ({ isOpen, onClose, children }:{
     onClose: () => void,
     children: React.ReactNode
 }) => {
-    useEffect(() => {
-      const handleEscKey = (event:KeyboardEvent) => {
-        if (event.key === 'Escape' && isOpen) {
-          onClose();
-        }
-      };
-      
-      document.addEventListener('keydown', handleEscKey);
-      return () => {
-        document.removeEventListener('keydown', handleEscKey);
-      };
-    }, [isOpen, onClose]);
-  
-    useEffect(() => {
-      if (isOpen) {
-        document.body.style.overflow = 'hidden';
-      } else {
-        document.body.style.overflow = 'auto';
-      }
-      
-      return () => {
-        document.body.style.overflow = 'auto';
-      };
-    }, [isOpen]);
   
     return (
       <>
-        {isOpen && (
-          <div 
-            className="fixed inset-0 bg-opacity-50 z-40 transition-opacity"
-            onClick={onClose}
-          />
-        )}
-        
         <div 
           className={`fixed z-0 top-0 right-0 h-full bg-white shadow-lg w-[25vw] transform transition-transform duration-300 ease-in-out ${
             isOpen ? 'translate-x-0' : 'translate-x-full'
