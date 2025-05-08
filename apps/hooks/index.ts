@@ -27,14 +27,12 @@ app.post('/hooks/getTestHook/:userId', async(req,res)=>{
     return;
 })
 
-app.post('/hooks/catch/test/:userId/:hookId', async(req, res)=> {
+app.post('/hooks/catch/test/:userId/:hookUuid', async(req, res)=> {
     const userId = req.params.userId;
-    const hookId = req.params.hookId;
-
+    const hookId = req.params.hookUuid;
     const metadata = req.body
-
     try{
-        await prisma.hookTest.update({
+        const hook_test = await prisma.hookTest.update({
             where:{
                 userId,
                 uuid:hookId
@@ -46,12 +44,33 @@ app.post('/hooks/catch/test/:userId/:hookId', async(req, res)=> {
 
         res.json({
             message:"zap triggers successfully",
+            hook_test_id: hook_test.id
         })
         return;
     }catch (error){
         throw error
     }
+})
 
+app.get('/hooks/getMetadata/:hookTestId', async (req, res)=>{
+    try{
+        const hook_test = await prisma.hookTest.findFirst({
+            where:{
+                id:req.params.hookTestId
+            },
+            select:{
+                metadata:true
+            }
+        })
+
+        res.json({
+            message:"",
+            metadata:hook_test.metadata
+        })
+        return;
+    }catch (error){
+        throw error
+    }
 })
 
 
