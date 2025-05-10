@@ -7,74 +7,6 @@ import { authMiddleware } from "./auth.middleware";
 const app = express();
 const PORT = process.env.HOOKS_PORT || HOOKS_PORT
 
-app.post('/hooks/getTestHook',authMiddleware, async(req,res)=>{
-    const userId = req.userId;
-    const current_hook_test_id = randomUUIDv7();
-    if(!userId) throw new Error("userId not found");
-   try{
-        const hook_tes = await prisma.hookTest.create({
-            data:{
-                uuid:current_hook_test_id,
-                userId
-            }
-        })
-        res.json({
-            message:"zap triggers successfully",
-            hook_test_id: hook_tes.id
-        })
-        return;
-
-   } catch(error){
-       throw error
-   }
-})
-
-app.get('/hooks/getMetadata/:hookTestId', async (req, res)=>{
-    try{
-        const hook_test = await prisma.hookTest.update({
-            where:{
-                id:req.params.hookTestId
-            },
-            data: {
-                metadata: req.body
-            }
-        })
-
-        res.json({
-            message:"zap triigers successfully",
-            hook_test_id: hook_test.id
-        })
-        return;
-    }catch (error){
-        throw error
-    }
-})
-
-app.get('/hooks/catch/test/getmetadata', async(req, res)=> {
-    try {
-        const hook_test = await prisma.hookTest.findFirst({
-            where:{
-                userId:req.userId
-            },
-            orderBy:{
-                createdAt:"desc"
-            },
-            select:{
-                metadata:true
-            }
-        })
-        res.json({
-            message:"",
-            metadata:hook_test?.metadata || {}
-        })
-
-        return;
-    }catch (error){
-        throw error
-    }
-})
-
-
 app.post('/hooks/catch/:userId/:zapId', async(req,res)=>{
     const userId = req.params.userId;
     const zapId = req.params.zapId;
@@ -102,5 +34,61 @@ app.post('/hooks/catch/:userId/:zapId', async(req,res)=>{
     return;
 })
 
+app.get('/hooks/hookid',authMiddleware, async(req, res)=> {
+    try{
+        const test_hook = await prisma.hookTest.create(({
+            data:{
+                userId:req.userId!
+            }
+        }))
+        res.json({
+            hookId: test_hook.id,
+            userId: req.userId
+        })
+        return;
+    }catch (error){
+        throw error
+    }
+})
+
+app.post('/hooks/catch/:userId/:hookId', async(req, res)=>{
+    try{
+        const metadata = req.body
+        const hook = await prisma.hookTest.update({
+            where:{
+                id:req.params.hookId
+            },
+            data:{
+                metadata
+            }
+        })
+        res.json({
+            message:"hook triggred successfully",
+            hookId: hook.id
+        })
+        return;
+    }catch (error){
+        throw error
+    }
+})
+
+app.get('/hooks/test/hook/:hookId', async(req, res)=>{
+    try{
+        const hook = await prisma.hookTest.findFirst({
+            where:{
+                id:req.params.hookId
+            },
+            select:{
+                metadata: true
+            }
+        })
+        res.json({
+            metadata: hook?.metadata
+        })
+        return;
+    }catch(error) {
+        throw error
+    }
+})
 
 app.listen(PORT, ()=>console.log(`hook server is listining on port ${PORT}`))
