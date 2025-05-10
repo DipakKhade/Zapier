@@ -2,13 +2,15 @@ import express from "express";
 import { prisma } from "db/client";
 import { HOOKS_PORT } from "config/config"
 import { randomUUIDv7 } from "bun";
+import { authMiddleware } from "./auth.middleware";
 
 const app = express();
 const PORT = process.env.HOOKS_PORT || HOOKS_PORT
 
-app.post('/hooks/getTestHook/:userId', async(req,res)=>{
-    const userId = req.params.userId;
+app.post('/hooks/getTestHook',authMiddleware, async(req,res)=>{
+    const userId = req.userId;
     const current_hook_test_id = randomUUIDv7();
+    if(!userId) throw new Error("userId not found");
    try{
         const hook_tes = await prisma.hookTest.create({
             data:{
@@ -16,34 +18,30 @@ app.post('/hooks/getTestHook/:userId', async(req,res)=>{
                 userId
             }
         })
+        res.json({
+            message:"zap triggers successfully",
+            hook_test_id: hook_tes.id
+        })
+        return;
+
    } catch(error){
        throw error
    }
-
-    res.json({
-        message:"zap triggers successfully",
-        hook_test_id: current_hook_test_id
-    })
-    return;
 })
 
-app.post('/hooks/catch/test/:userId/:hookUuid', async(req, res)=> {
-    const userId = req.params.userId;
-    const hookId = req.params.hookUuid;
-    const metadata = req.body
+app.get('/hooks/getMetadata/:hookTestId', async (req, res)=>{
     try{
         const hook_test = await prisma.hookTest.update({
             where:{
-                userId,
-                uuid:hookId
+                id:req.params.hookTestId
             },
             data: {
-                metadata
+                metadata: req.body
             }
         })
 
         res.json({
-            message:"zap triggers successfully",
+            message:"zap triigers successfully",
             hook_test_id: hook_test.id
         })
         return;
@@ -52,21 +50,24 @@ app.post('/hooks/catch/test/:userId/:hookUuid', async(req, res)=> {
     }
 })
 
-app.get('/hooks/getMetadata/:hookTestId', async (req, res)=>{
-    try{
+app.get('/hooks/catch/test/getmetadata', async(req, res)=> {
+    try {
         const hook_test = await prisma.hookTest.findFirst({
             where:{
-                id:req.params.hookTestId
+                userId:req.userId
+            },
+            orderBy:{
+                createdAt:"desc"
             },
             select:{
                 metadata:true
             }
         })
-
         res.json({
             message:"",
-            metadata:hook_test.metadata
+            metadata:hook_test?.metadata || {}
         })
+
         return;
     }catch (error){
         throw error
