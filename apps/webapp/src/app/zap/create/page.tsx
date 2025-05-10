@@ -12,7 +12,7 @@ import {
 import '@xyflow/react/dist/style.css';
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription, Dialog } from '@/components/dialog';
 import { get_available_actions, get_available_triggers } from '@/lib/common-functions';
-import { Router, SearchIcon } from 'lucide-react';
+import { Divide, Router, SearchIcon } from 'lucide-react';
 import { ZapMetadataSidebar } from '@/components/zap-metadata-sidebar';
 import { ZapCreateHeader } from '@/components/zap-create-header';
 import { PRIMARY_BACKEND_URL } from 'config/config';
@@ -260,7 +260,7 @@ export default function Page() {
                 <div className="space-y-2">
                   <SelectionModal 
                     modalFor={selectedNode.id === "1" ? "Triggers" : "Actions"}
-                    data={selectedNode.data.label === "Trigger" ? availableTriggers : availableActions} 
+                    data={selectedNode.id === "1" ? availableTriggers : availableActions} 
                     handleClose={handleClose}
                     selectedNode = {selectedNode}
                   />
@@ -332,6 +332,33 @@ const MetadataModal = ({metaDataFor}:{
       <div><img src={metaDataFor[0].image} alt="img" className="w-10 h-10 rounded-full" /></div>
       <div>{metaDataFor[0].name}</div>
     </div>
-    {JSON.stringify(metaDataFor)}
+
+  {metaDataFor[0].name === 'Webhook' && <div>
+    <div>
+        <h3>Your Webhook URL</h3>
+        <p>You&apos;ll need to configure your application with this Zaps webhook URL</p>
+      </div>
+      <div className='flex'>
+        <span className='border border-slate-500 p-1 w-full m-2'>
+           <input className='p-2 w-full' value={'https://hooks.zapier.com/hooks/getTestHook/'} readOnly />
+        </span>
+        <button className="bg-slate-50 px-2 p-2 rounded-sm py-1 focus:outline-none cursor-pointer text-blue-500">
+          Copy
+        </button>
+      </div>
+      <div>
+        <h4 className='text-slate-900 font-semibold text-lg'>
+        We&apos;re listening!
+        </h4>
+        <p>
+        To confirm your trigger is set up correctly, we&apos;ll find recent requests in your account
+        </p>
+      </div>
+      <div className='mt-12 flex justify-center items-center'>
+        <button className='bg-blue-500 p-3 w-full text-slate-50 font-semibold'>Test Trigger</button>
+      </div>
+  </div> }
+
+    
   </div>
 }

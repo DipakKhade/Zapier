@@ -1,11 +1,23 @@
 
+import { get_test_hookId, get_test_webhook_uuid } from '@/lib/common-functions';
+import { HOOKS_URL } from 'config/config';
 import { X } from 'lucide-react';
+import { useEffect, useState } from 'react';
 
 export const ZapMetadataSidebar = ({ isOpen, onClose, children }:{
     isOpen: boolean,
     onClose: () => void,
     children: React.ReactNode
 }) => {
+  const [testWebhook, setTestWebhook] = useState<string | null>(null);
+  const [hookUuid, setHookUuid] = useState<string | null>(null);
+
+  useEffect(()=>{
+    (async()=>{
+       const { hookId, userId } = await get_test_hookId();
+       setTestWebhook(`${HOOKS_URL}/hooks/catch/${userId}/${hookId}`)
+    })();
+  })
   
     return (
       <>
