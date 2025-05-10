@@ -10,7 +10,7 @@ export const ZapMetadataSidebar = ({ isOpen, onClose, children }:{
     return (
       <>
         <div 
-          className={`fixed z-0 top-0 right-0 h-full bg-white shadow-lg w-[25vw] transform transition-transform duration-300 ease-in-out ${
+          className={`fixed z-0 top-0 right-0 h-full bg-white shadow-lg w-[40vw] transform transition-transform duration-300 ease-in-out ${
             isOpen ? 'translate-x-0' : 'translate-x-full'
           }`}
         >
