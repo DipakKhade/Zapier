@@ -8,3 +8,5 @@ export const PRIMARY_BACKEND_PORT = 3001;
 export const PRIMARY_BACKEND_URL = `http://localhost:${PRIMARY_BACKEND_PORT}`;
 
 export const JWT_SEC = process.env.JWT_SEC || "asd123"
+
+export const HOOKS_URL = `http://localhost:${HOOKS_PORT}`

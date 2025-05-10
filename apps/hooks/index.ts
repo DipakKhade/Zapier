@@ -1,10 +1,11 @@
 import express from "express";
 import { prisma } from "db/client";
 import { HOOKS_PORT } from "config/config"
-import { randomUUIDv7 } from "bun";
 import { authMiddleware } from "./auth.middleware";
+import cors from "cors";
 
 const app = express();
+app.use(cors());
 const PORT = process.env.HOOKS_PORT || HOOKS_PORT
 
 app.post('/hooks/catch/:userId/:zapId', async(req,res)=>{
@@ -51,9 +52,9 @@ app.get('/hooks/hookid',authMiddleware, async(req, res)=> {
     }
 })
 
-app.post('/hooks/catch/:userId/:hookId', async(req, res)=>{
+app.post('/hooks/catch/test/:userId/:hookId', async(req, res)=>{
     try{
-        const metadata = req.body
+        const metadata = JSON.stringify(req.body)
         const hook = await prisma.hookTest.update({
             where:{
                 id:req.params.hookId

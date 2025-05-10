@@ -11,11 +11,11 @@ import {
 } from '@xyflow/react';
 import '@xyflow/react/dist/style.css';
 import { DialogContent, DialogHeader, DialogTitle, DialogDescription, Dialog } from '@/components/dialog';
-import { get_available_actions, get_available_triggers } from '@/lib/common-functions';
+import { get_available_actions, get_available_triggers, get_test_hookId } from '@/lib/common-functions';
 import { Divide, Router, SearchIcon } from 'lucide-react';
 import { ZapMetadataSidebar } from '@/components/zap-metadata-sidebar';
 import { ZapCreateHeader } from '@/components/zap-create-header';
-import { PRIMARY_BACKEND_URL } from 'config/config';
+import { HOOKS_URL, PRIMARY_BACKEND_URL } from 'config/config';
 import { useRouter } from 'next/navigation';
 
 interface Node {
@@ -327,6 +327,15 @@ const SelectionModal = ( { modalFor, data, handleClose, selectedNode  } : {
 const MetadataModal = ({metaDataFor}:{
   metaDataFor: any
 }) =>{
+  const [testWebhook, setTestWebhook] = useState<string | null>(null);
+  useEffect(() => {
+    (async () => {
+        const { hookId, userId } = await get_test_hookId(); // <- this might fail
+        setTestWebhook(`${HOOKS_URL}/hooks/catch/test/${userId}/${hookId}`);
+    })();
+  }, []);
+  
+
   return <div>
     <div className='flex items-center justify-center space-y-2 p-2'>
       <div><img src={metaDataFor[0].image} alt="img" className="w-10 h-10 rounded-full" /></div>
@@ -340,9 +349,11 @@ const MetadataModal = ({metaDataFor}:{
       </div>
       <div className='flex'>
         <span className='border border-slate-500 p-1 w-full m-2'>
-           <input className='p-2 w-full' value={'https://hooks.zapier.com/hooks/getTestHook/'} readOnly />
+           <input className='p-2 w-full' value={testWebhook as string} readOnly />
         </span>
-        <button className="bg-slate-50 px-2 p-2 rounded-sm py-1 focus:outline-none cursor-pointer text-blue-500">
+        <button className="bg-slate-50 px-2 p-2 rounded-sm py-1 focus:outline-none cursor-pointer text-blue-500" onClick={()=>{
+          navigator.clipboard.writeText(testWebhook as string);
+        }}>
           Copy
         </button>
       </div>

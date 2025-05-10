@@ -2,10 +2,13 @@ import { Router } from "express";
 import { authMiddleware } from "../../../Middlewares/auth";
 import { prisma } from "db/client";
 import { zapSchema } from "common-types";
+import { HOOKS_URL } from "config/config";
 
 const zapRouter = Router();
 
-zapRouter.get('/zapRuns', authMiddleware, async(req,res)=>{
+zapRouter.use(authMiddleware);
+
+zapRouter.get('/zapRuns', async(req,res)=>{
     try{
         const zaps = await prisma.zap.findMany({
             where: {
@@ -47,7 +50,7 @@ zapRouter.get('/zapRuns', authMiddleware, async(req,res)=>{
     }
 })
 
-zapRouter.post('/create', authMiddleware, async(req,res)=>{
+zapRouter.post('/create', async(req,res)=>{
     try{
         const { payload } = req.body;
         const parsedPaylaod = zapSchema.safeParse(payload);
@@ -95,7 +98,7 @@ zapRouter.post('/create', authMiddleware, async(req,res)=>{
     }
 })
 
-zapRouter.get('/:zapId', authMiddleware, async(req, res)=>{
+zapRouter.get('/:zapId', async(req, res)=>{
     try{
         const zapId = req.params.zapId;
         const zap = await prisma.zap.findFirst({

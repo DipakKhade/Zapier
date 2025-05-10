@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev":"bun ./index.ts"
+    "dev": "bun ./index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest",
@@ -15,8 +15,8 @@
   },
   "dependencies": {
     "cors": "^2.8.5",
+    "db": "*",
     "express": "^5.1.0",
-    "db":"*",
-    "types":"*"
+    "types": "*"
   }
 }

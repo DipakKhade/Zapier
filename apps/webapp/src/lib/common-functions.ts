@@ -1,4 +1,4 @@
-import { PRIMARY_BACKEND_URL } from "config/config"
+import { HOOKS_URL, PRIMARY_BACKEND_URL } from "config/config"
 
 export const get_available_triggers = async () =>{
     const res = await fetch(`${PRIMARY_BACKEND_URL}/api/v1/trigger/available_triggers`,{
@@ -25,8 +25,8 @@ export const get_available_actions = async () =>{
 }
 
 export const get_test_hookId = async () =>{
-    const res = await fetch(`${PRIMARY_BACKEND_URL}/hook/hookid}`,{
-        method: "POST",
+    const res = await fetch(`${HOOKS_URL}/hooks/hookid`,{
+        method: "GET",
         headers: {
             authorization : `Bearer ${localStorage.getItem('token')}`
         }
