@@ -19,6 +19,7 @@ model User {
   email               String? @unique
   password            String
   zap                 Zap[]
+  hokTest             HookTest[]
 }
 
 model Zap {
@@ -76,4 +77,12 @@ model ZapRunOutBox {
   id                String @id @default(uuid())
   zapRunId          String @unique
   zapRun            ZapRun @relation(fields: [zapRunId], references: [id])
+}
+
+model HookTest {
+  id                String    @id @default(uuid())
+  userId            String
+  User              User      @relation(fields: [userId], references: [id])
+  metadata         Json?      @default("{}")
+  createdAt         DateTime  @default(now())
 }
