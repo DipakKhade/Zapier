@@ -51,3 +51,15 @@ export const get_test_webhook_url = async (hookUUID:string) =>{
     const data = await res.json();
     return data?.message;
 }
+
+export const get_metadata = async (hookId:string)=> {
+    const res = await fetch(`${HOOKS_URL}/hooks/test/metadata/${hookId}`, {
+        method: "GET", 
+        headers: {
+            authorization : `Bearer ${localStorage.getItem('token')}`
+        }
+    })
+
+    const data = await res.json();
+    return data?.metadata
+}
