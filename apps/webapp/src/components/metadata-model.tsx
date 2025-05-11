@@ -9,6 +9,9 @@ export const MetadataModal = ({ metaDataFor }: { metaDataFor: any }) => {
     const [copied, setCopied] = useState(false);
     const [metadata, setMetadata] = useState();
     const [hookId, setHookId] = useState<string>('');
+    const [emailKey, setEmailKey] = useState<string>('');
+    const [emailBody, setEmailBody] = useState<string>('');
+
     useEffect(() => {
       (async () => {
         const { hookId, userId } = await get_test_hookId(); 
@@ -84,7 +87,9 @@ export const MetadataModal = ({ metaDataFor }: { metaDataFor: any }) => {
             </div>
 
             <div>
-                {metadata && <PrettyMetadata metadata={metadata} />}
+                {metadata && <PrettyMetadata metadata={{metadata}} getOnSelect={(x)=>{
+                    console.log('x from getOnSelect', x)
+                }} />}
             </div>
           </div>
         }
@@ -92,7 +97,13 @@ export const MetadataModal = ({ metaDataFor }: { metaDataFor: any }) => {
         {
             metaDataFor.name === "Email" && <div>
                <div>
-                    what is email from metadata
+                    <h4 className="text-slate-900 font-semibold text-lg">Click on Email Key</h4>
+                    {/* { emailKey && <p>Key : {metadata[emailKey.namespace.map(x=>[...[x]])]} </p> } */}
+               </div>
+               <div>
+                    {metadata && !emailKey && <PrettyMetadata metadata={metadata} getOnSelect={(x)=>{
+                            setEmailKey(x)
+                    }} />}
                </div>
             </div>
         }
