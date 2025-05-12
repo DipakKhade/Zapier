@@ -22,24 +22,29 @@ async function swipper(){
             }
         })
 
+        console.log('zap_run_outbox--------',zap_run_outbox)
+
         await producer.send({
             topic:TOPIC_NAME,
             messages:zap_run_outbox.map(z=>{
                     return {
-                        value:z.zapRunId
+                        value:JSON.stringify({
+                            zapRunId:z.zapRunId,
+                            actionOrder:0
+                        })
                     }
                 })
         })
 
         await prisma.zapRunOutBox.deleteMany({
             where:{
-                id:{
+                zapRunId:{
                     in:zap_run_outbox.map(z=>z.zapRunId)
                 }
             }
         })
 
-        await new Promise(r => setTimeout(r, 3000));
+        await new Promise(r => setTimeout(r, 10000));
     }
 }
 

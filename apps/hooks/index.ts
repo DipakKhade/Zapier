@@ -6,6 +6,7 @@ import cors from "cors";
 
 const app = express();
 app.use(cors());
+app.use(express.json());
 const PORT = process.env.HOOKS_PORT || HOOKS_PORT
 
 app.post('/hooks/catch/:userId/:zapId', async(req,res)=>{
@@ -54,7 +55,7 @@ app.get('/hooks/hookid',authMiddleware, async(req, res)=> {
 
 app.post('/hooks/catch/test/:userId/:hookId', async(req, res)=>{
     try{
-        const metadata = JSON.stringify(req.body)
+        const metadata = req.body
         const hook = await prisma.hookTest.update({
             where:{
                 id:req.params.hookId
@@ -73,7 +74,7 @@ app.post('/hooks/catch/test/:userId/:hookId', async(req, res)=>{
     }
 })
 
-app.get('/hooks/test/hook/:hookId', async(req, res)=>{
+app.get('/hooks/test/metadata/:hookId',authMiddleware, async(req, res)=>{
     try{
         const hook = await prisma.hookTest.findFirst({
             where:{

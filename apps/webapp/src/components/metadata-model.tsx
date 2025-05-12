@@ -97,11 +97,22 @@ export const MetadataModal = ({ metaDataFor }: { metaDataFor: any }) => {
         {
             metaDataFor.name === "Email" && <div>
                <div>
-                    <h4 className="text-slate-900 font-semibold text-lg">Click on Email Key</h4>
-                    {/* { emailKey && <p>Key : {metadata[emailKey.namespace.map(x=>[...[x]])]} </p> } */}
+                    {!emailKey && <h4 className="text-slate-900 font-semibold text-lg">Click on Email Key</h4>}
+                    { emailKey && <p>Target email key path : {JSON.stringify(emailKey.namespace)} </p> }
+
+                    {!emailBody && <h4 className="text-slate-900 font-semibold text-lg">
+                            Enter email body
+                            <input type="text" placeholder="Enter email body" onChange={(e)=>{
+                                setEmailBody(e.target.value)
+                            }} />
+                        </h4>}
+
                </div>
                <div>
                     {metadata && !emailKey && <PrettyMetadata metadata={metadata} getOnSelect={(x)=>{
+                            setEmailKey(x)
+                    }} />}
+                    {metadata && emailKey && !emailBody &&  <PrettyMetadata metadata={metadata} getOnSelect={(x)=>{
                             setEmailKey(x)
                     }} />}
                </div>

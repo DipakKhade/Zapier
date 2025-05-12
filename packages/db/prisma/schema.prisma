@@ -83,6 +83,6 @@ model HookTest {
   id                String    @id @default(uuid())
   userId            String
   User              User      @relation(fields: [userId], references: [id])
-  metadata         Json?      @default("{}")
+  metadata          Json?      @default("{}")
   createdAt         DateTime  @default(now())
 }

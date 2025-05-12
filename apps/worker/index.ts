@@ -18,7 +18,7 @@ async function actionsConsumer(){
     consumer.run({
         autoCommit:false,
         eachMessage:async({ topic, partition, message })=>{
-            console.log('log from worker',{partition,offset: message.offset,value: message.value!.toString()}, 'topic', topic);
+            console.log('log from worker---------------------------', message.value!.toString());
 
             new Promise((r)=>setTimeout(()=>r, 5000));
 
