@@ -1,5 +1,6 @@
 
 import { TOPIC_NAME } from "config/config";
+import { prisma } from "db/client";
 import { Kafka } from "kafkajs";
 
 const kafka = new Kafka({
@@ -19,8 +20,35 @@ async function actionsConsumer(){
         autoCommit:false,
         eachMessage:async({ topic, partition, message })=>{
             console.log('log from worker---------------------------', message.value!.toString());
+            //{"zapRunId":"392b75cb-089c-4f3e-9be5-9a8c2d343cf1","actionOrder":0}
+            const parsedMessage = JSON.parse(message.value!.toString())
+            const currentZap = await prisma.zapRun.findFirst({
+                where:{
+                    id:parsedMessage.zapRunId
+                },
+                select: {
+                    metadata:true,
+                    zap: {
+                        include: {
+                            action: {
+                                include: {
+                                    type: {
+                                        select: {
+                                            actions: true
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            })
 
-            new Promise((r)=>setTimeout(()=>r, 5000));
+            if(parsedMessage.actionOrder !== (currentZap?.zap?.action?.length || 1) - 1){
+                
+            }else {
+                // last action
+            }
 
               await consumer.commitOffsets([
                 {
