@@ -12,7 +12,10 @@ async function actionsConsumer(){
     const consumer = kafka.consumer({
         groupId:'asd'
     });
-    await consumer.connect();
+    await consumer.connect()
+
+    const producer = kafka.producer();
+    await producer.connect()
 
     consumer.subscribe({topic:TOPIC_NAME})
 
@@ -32,22 +35,32 @@ async function actionsConsumer(){
                         include: {
                             action: {
                                 include: {
-                                    type: {
-                                        select: {
-                                            actions: true
-                                        }
-                                    }
+                                    type: true
                                 }
                             }
                         }
                     }
                 }
             })
-
             if(parsedMessage.actionOrder !== (currentZap?.zap?.action?.length || 1) - 1){
-                
+                const currentAction = currentZap?.zap?.action[parsedMessage.actionOrder];
+                if(currentAction?.type?.name === "Send Email"){
+
+                } else if(currentAction?.type?.name === "Send SOLANA"){
+                    
+                }
             }else {
-                // last action
+                producer.send({
+                    topic:TOPIC_NAME,
+                    messages:[
+                        {
+                            value:JSON.stringify({
+                                zapRunId:parsedMessage.zapRunId,
+                                actionOrder:parsedMessage.actionOrder+1
+                            })
+                        }
+                    ]
+                })
             }
 
               await consumer.commitOffsets([
