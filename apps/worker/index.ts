@@ -2,6 +2,7 @@
 import { TOPIC_NAME } from "config/config";
 import { prisma } from "db/client";
 import { Kafka } from "kafkajs";
+import { metadataParser } from "./parser";
 
 const kafka = new Kafka({
     clientId:'processer',
@@ -42,9 +43,19 @@ async function actionsConsumer(){
                     }
                 }
             })
+            console.log('currentZap-----------',currentZap)
             if(parsedMessage.actionOrder !== (currentZap?.zap?.action?.length || 1) - 1){
                 const currentAction = currentZap?.zap?.action[parsedMessage.actionOrder];
+                console.log('currentAction-----------',currentAction)
                 if(currentAction?.type?.name === "Send Email"){
+                    const currentZapMetadata = currentZap?.metadata;
+                    const actionMetadata = currentAction?.metadata;
+                    console.log('currentZapMetadata---------------',currentZapMetadata)
+                    console.log('actionMetadata---------------',actionMetadata)
+
+                    if(!currentZapMetadata || !actionMetadata) return;
+
+                    metadataParser(currentAction.type.name,currentZapMetadata,actionMetadata)
 
                 } else if(currentAction?.type?.name === "Send SOLANA"){
                     
