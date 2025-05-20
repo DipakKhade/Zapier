@@ -39,7 +39,6 @@ cp .env.example .env
 Required environment variables:
 ```env
 # Webapp (.env)
-NEXT_PUBLIC_API_URL=your_api_url
 SOLANA_PRIVATE_KEY=your_private_key
 HOOKS_URL=your_hooks_url
 
@@ -60,7 +59,6 @@ bun dev
 
 ## 🔧 Key Features
 
-- **Visual Workflow Builder**: Create automation workflows using a drag-and-drop interface
 - **Trigger & Action System**: Connect different services through triggers and actions
 - **Solana Integration**: Built-in support for Solana blockchain transactions
 - **Webhook Support**: Test and monitor webhook integrations
