@@ -9,6 +9,13 @@ export const PrettyMetadata = ({metadata, getOnSelect}:{
         <h2 className='text-slate-900 font-semibold text-lg'>Metadata</h2>
         <ReactJson src={metadata} onSelect={(x)=>{
                 getOnSelect(x)
+                console.log(x.namespace.map(i => {
+                    if(i === '0'){
+                        return [0]
+                    } else {
+                        return i
+                    }
+                }))
         }} />
     </div>
 }
