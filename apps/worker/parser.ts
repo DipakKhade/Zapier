@@ -22,10 +22,23 @@ export const metadataParser = (actions:'Send Email'|'Send SOLANA',currentZapMeta
           }
         }
     
-        return resolvedMetadata;
-  } else if (actions === 'Send SOLANA') {
-    
-  }
+      } else if (actions === 'Send SOLANA') {
+        // need to change this parser laogic 
+
+        for (const key in actionMetadata as Record<string, any>) {
+          const value = (actionMetadata as any)[key];
+          if (typeof value === 'string') {
+            const newValue = value.replace(/{(metadata\.[^}]+)}/g, (_, path) => {
+              const resolved = getValueFromPath(currentZapMetadata, path);
+              return resolved !== undefined ? resolved : '';
+            });
+            resolvedMetadata[key] = newValue;
+          } else {
+            resolvedMetadata[key] = value;
+          }
+        }
+      }
+      return resolvedMetadata;
   } catch (error) {
     console.log('error while parsing metadata',error)
   }

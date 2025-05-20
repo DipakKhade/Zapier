@@ -4,6 +4,7 @@ import { prisma } from "db/client";
 import { Kafka } from "kafkajs";
 import { metadataParser } from "./parser";
 import sendEmail from "./mail";
+import sendSOLANA from "./solana";
 
 const kafka = new Kafka({
     clientId:'processer',
@@ -54,12 +55,18 @@ async function actionsConsumer(){
 
                     if(!currentZapMetadata || !actionMetadata) return;
 
-                    const resolvedMetadata = metadataParser(currentAction?.type?.name,currentZapMetadata,actionMetadata);
+                    const resolvedMetadata = metadataParser(currentAction?.type?.name, currentZapMetadata, actionMetadata);
 
-                    if (resolvedMetadata) await sendEmail(resolvedMetadata.email,resolvedMetadata.body)
+                    if (resolvedMetadata) await sendEmail(resolvedMetadata.email,resolvedMetadata.body);
 
                 } else if(currentAction?.type?.name === "Send SOLANA"){
-                    
+                    const currentZapMetadata = currentZap?.metadata;
+                    const actionMetadata = currentAction?.metadata;
+
+                    if(!currentZapMetadata || !actionMetadata) return;
+
+                    const resolvedMetadata = metadataParser(currentAction?.type?.name, currentZapMetadata, actionMetadata);
+                    if(resolvedMetadata) sendSOLANA(resolvedMetadata?.address,resolvedMetadata?.solAmount);
                 }
             }else {
                 producer.send({

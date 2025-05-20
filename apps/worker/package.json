@@ -4,7 +4,7 @@
   "type": "module",
   "private": true,
   "scripts": {
-    "dev":"bun ./index.ts"
+    "dev": "bun ./index.ts"
   },
   "devDependencies": {
     "@types/bun": "latest"
@@ -13,8 +13,9 @@
     "typescript": "^5"
   },
   "dependencies": {
-    "kafkajs": "^2.2.4",
-    "config":"*",
-    "db":"*"
+    "@solana/web3.js": "^1.98.2",
+    "config": "*",
+    "db": "*",
+    "kafkajs": "^2.2.4"
   }
 }
