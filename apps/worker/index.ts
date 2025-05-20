@@ -3,6 +3,7 @@ import { TOPIC_NAME } from "config/config";
 import { prisma } from "db/client";
 import { Kafka } from "kafkajs";
 import { metadataParser } from "./parser";
+import sendEmail from "./mail";
 
 const kafka = new Kafka({
     clientId:'processer',
@@ -50,12 +51,12 @@ async function actionsConsumer(){
                 if(currentAction?.type?.name === "Send Email"){
                     const currentZapMetadata = currentZap?.metadata;
                     const actionMetadata = currentAction?.metadata;
-                    console.log('currentZapMetadata---------------',currentZapMetadata)
-                    console.log('actionMetadata---------------',actionMetadata)
 
                     if(!currentZapMetadata || !actionMetadata) return;
 
-                    metadataParser(currentAction.type.name,currentZapMetadata,actionMetadata)
+                    const resolvedMetadata = metadataParser(currentAction?.type?.name,currentZapMetadata,actionMetadata);
+
+                    if (resolvedMetadata) await sendEmail(resolvedMetadata.email,resolvedMetadata.body)
 
                 } else if(currentAction?.type?.name === "Send SOLANA"){
                     

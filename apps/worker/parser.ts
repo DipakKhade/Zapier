@@ -27,7 +27,7 @@ export const metadataParser = (actions:'Send Email'|'Send SOLANA',currentZapMeta
     
   }
   } catch (error) {
-    console.log('error',error)
+    console.log('error while parsing metadata',error)
   }
 }
 
